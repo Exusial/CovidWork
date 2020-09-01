@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:andriod="http://schemas.android.com/apk/res/android"
+    andriod:orientation="vertical"
+    andriod:layout_width="match_parent"
+    andriod:layout_height="match_parent"
+    >
+    <LinearLayout
+        andriod:layout_width="match_parent"
+        andriod:layout_height="match_parent"
+        andriod:orientation="vertical"
+        andriod:gravity="center">
+        <Button
+            andriod:id="@+id/rect_btn1"
+            andriod:layout_width="300dp"
+            andriod:layout_height="50dp"
+            andriod:text="全国各省疫情展示"
+            andriod:layout_marginBottom="25dp"/>
+        <Button
+            andriod:id="@+id/rect_btn2"
+            andriod:layout_width="300dp"
+            andriod:layout_height="50dp"
+            andriod:text="全球各国疫情情况展示"
+            andriod:layout_marginBottom="25dp"/>
+        <Button
+            andriod:id="@+id/graph_btn1"
+            andriod:layout_width="300dp"
+            andriod:layout_height="50dp"
+            andriod:text="新冠疫情图谱"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:andriod="http://schemas.android.com/apk/res/android"
+    andriod:orientation="vertical"
+    andriod:layout_width="match_parent"
+    andriod:layout_height="match_parent"
+    >
+    <LinearLayout
+        andriod:id="@+id/sh1"
+        andriod:layout_width="match_parent"
+        andriod:layout_height="40dp"
+        andriod:orientation="horizontal"
+        andriod:layout_marginTop="10dp">
+        <ImageView
+            andriod:id="@+id/back_img"
+            andriod:layout_width="60dp"
+            andriod:layout_height="match_parent"
+            andriod:src="@drawable/back"
+            />
+    </LinearLayout>
+
+</LinearLayout>

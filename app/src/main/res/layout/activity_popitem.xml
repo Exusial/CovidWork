@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:andriod="http://schemas.android.com/apk/res/android"
+    andriod:orientation="horizontal"
+    andriod:layout_width="match_parent"
+    andriod:layout_height="match_parent"
+    >
+    <TextView
+        andriod:id="@+id/itt_1"
+        andriod:layout_width="match_parent"
+        andriod:layout_height="match_parent"
+        andriod:text="tes"
+        />
+</LinearLayout>
