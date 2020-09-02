@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:andriod="http://schemas.android.com/apk/res/android"
+    andriod:orientation="horizontal"
+    andriod:layout_width="wrap_content"
+    andriod:layout_height="20dp"
+    andriod:background="@color/colorBlue"
+    >
+    <TextView
+        andriod:id="@+id/ptitle"
+        andriod:layout_width="wrap_content"
+        andriod:layout_height="wrap_content"
+        andriod:text="iii"
+        andriod:background="@color/colorGray"
+        andriod:layout_marginLeft="5dp"/>
+    <ImageView
+        andriod:id="@+id/arrow"
+        andriod:layout_width="wrap_content"
+        andriod:layout_height="wrap_content"
+        andriod:src="@drawable/left"
+        />
+    <TextView
+        andriod:id="@+id/pcontent"
+        andriod:layout_width="wrap_content"
+        andriod:layout_height="wrap_content"
+        andriod:text="content"
+        andriod:layout_marginRight="10dp"
+        />
+</LinearLayout>

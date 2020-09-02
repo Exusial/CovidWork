@@ -3,12 +3,13 @@ package com.example.covidnews;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+
+import com.example.covidnews.virusviews.VirusShowActivity;
 
 public class VirusSearchActivity extends AppCompatActivity {
 
@@ -21,7 +22,7 @@ public class VirusSearchActivity extends AppCompatActivity {
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(VirusSearchActivity.this,VirusShowActivity.class);
+                Intent intent = new Intent(VirusSearchActivity.this, VirusShowActivity.class);
                 Bundle bundle = new Bundle();
                 EditText item = (EditText)findViewById(R.id.items);
                 bundle.putString("name",item.getText().toString());

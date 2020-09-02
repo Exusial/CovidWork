@@ -38,9 +38,6 @@ public class GlobalAdapter extends BaseQuickAdapter<ListItem, BaseViewHolder> {
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, ListItem listItem) {
         int pos = baseViewHolder.getLayoutPosition();
-        if(pos == 0){
-            baseViewHolder.setText(R.id.country,"国家").setText(R.id.infected, "感染人数").setText(R.id.dead, "死亡人数").setText(R.id.cured, "治愈人数");
-        }
-            baseViewHolder.setText(R.id.country, listItem.getName()).setText(R.id.infected, listItem.getInfected()).setText(R.id.dead, listItem.getDead()).setText(R.id.cured, listItem.getCured());
+        baseViewHolder.setText(R.id.country, listItem.getName()).setText(R.id.infected, listItem.getInfected()).setText(R.id.dead, listItem.getDead()).setText(R.id.cured, listItem.getCured());
     }
 }

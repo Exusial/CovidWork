@@ -11,8 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".VirusShowActivity"
+        <activity android:name=".virusviews.VirusDetailActivity"
             android:parentActivityName=".VirusSearchActivity"></activity>
+        <activity
+            android:name=".virusviews.VirusShowActivity"
+            android:parentActivityName=".VirusSearchActivity" />
         <activity
             android:name=".VirusSearchActivity"
             android:parentActivityName=".ShowDataActivity" />
