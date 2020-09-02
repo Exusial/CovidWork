@@ -22,7 +22,7 @@
             andriod:text="全球各国疫情情况展示"
             andriod:layout_marginBottom="25dp"/>
         <Button
-            andriod:id="@+id/graph_btn1"
+            andriod:id="@+id/rect_btn3"
             andriod:layout_width="300dp"
             andriod:layout_height="50dp"
             andriod:text="新冠疫情图谱"/>

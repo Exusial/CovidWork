@@ -17,7 +17,7 @@ public class ProvinceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_province);
         ColumnChartView colview = (ColumnChartView)findViewById(R.id.col1);
-        int subcol = 1;
+        int subcol = 3;
         int numcol = 23;
         List<Column> cols = new ArrayList<Column>();
         List<SubcolumnValue> subcols;
