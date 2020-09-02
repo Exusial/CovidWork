@@ -19,15 +19,12 @@ public class TreeAdapter extends BaseNodeAdapter {
     public TreeAdapter() {
         super();
         // 注册Provider，总共有如下三种方式
-
-        // 需要占满一行的，使用此方法（例如section）
         addFullSpanNodeProvider(new RootNodeProvider());
         // 普通的item provider
         addNodeProvider(new DesNodeProvider());
         addNodeProvider(new ImgNodeProvider());
         addNodeProvider(new PropertyNodeProvider());
         addNodeProvider(new RelationNodeProvider());
-        // 脚布局的 provider
     }
 
     @Override
@@ -52,11 +49,12 @@ public class TreeAdapter extends BaseNodeAdapter {
 
 class RootNode extends BaseExpandNode{
     private String Title;
-    private ArrayList<BaseNode> children;
+    private List<BaseNode> children;
 
-    public RootNode(String Title,ArrayList<BaseNode> children){
+    public RootNode(String Title,List<BaseNode> children){
         this.Title = Title;
         this.children = children;
+        setExpanded(false);
     }
 
     public String getTitle() {
