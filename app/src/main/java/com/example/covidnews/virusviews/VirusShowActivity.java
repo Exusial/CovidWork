@@ -3,6 +3,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,6 +39,8 @@ public class VirusShowActivity extends AppCompatActivity {
     public static ArrayList<String> names;
     private SafeHandler handler;
     public static RecyclerView myview;
+    private static ItemAdapter adapter;
+    private static LinearLayoutManager manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +57,13 @@ public class VirusShowActivity extends AppCompatActivity {
             }
         };
         thread.start();
+        View emp =getLayoutInflater().inflate(R.layout.loading_layout,null);
+        manager = new LinearLayoutManager(this);
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        myview.setLayoutManager(manager);
+        adapter = new ItemAdapter(R.layout.virus_item_layout, null);
+        adapter.setEmptyView(emp);
+        myview.setAdapter(adapter);
     }
 
     public Message get_data() {
@@ -91,14 +102,17 @@ public class VirusShowActivity extends AppCompatActivity {
                 else
                     item.image = temp.getImg();
                 covid wrappr = JSON.toJavaObject(temp.getCOVID(), covid.class);
-                System.out.println(wrappr.getProperties());
+                //System.out.println(wrappr.getProperties());
                 item.properties = JSONObject.parseObject(wrappr.getProperties().toString(), new TypeReference<HashMap<String, String>>(){});
                 for (int j = 0; j < wrappr.getRelations().size(); j++) {
                     item.relations.add(JSON.toJavaObject(wrappr.getRelations().getJSONObject(j), relation.class));
                 }
                 datasets.put(eobj.get("label").toString(),item);
             }
-            msg.what = 1;
+            if(names.size()!=0)
+                msg.what = 1;
+            else
+                msg.what = 0;
         } catch (MalformedURLException e) {
             System.out.println("MalForm");
             msg.what = 0;
@@ -122,31 +136,36 @@ public class VirusShowActivity extends AppCompatActivity {
             super.handleMessage(msg);
             if (msg.what == 0) {
                 VirusShowActivity activity = (VirusShowActivity) ref.get();
-                System.out.println("Failed!");
+                if(activity!=null){
+                    View view = getLayoutInflater().inflate(R.layout.nothing_layout,null);
+                    adapter.setEmptyView(view);
+                    adapter.notifyDataSetChanged();
+                    //myview.setAdapter(adapter);
+                }
+                //System.out.println("Failed!");
             } else {
-                System.out.println("Success!");
+                //System.out.println("Success!");
                 final VirusShowActivity activity = (VirusShowActivity)ref.get();
                 if(activity!=null) {
                     //activity.findViewById(R.id.layout_emp).setVisibility(View.GONE);
-                    LinearLayoutManager manager = new LinearLayoutManager(activity);
-                    manager.setOrientation(LinearLayoutManager.VERTICAL);
-                    myview.setLayoutManager(manager);
-                    ItemAdapter adapter = new ItemAdapter(R.layout.virus_item_layout, names);
+                    adapter.setList(names);
+                    adapter.notifyDataSetChanged();
                     adapter.addChildClickViewIds(R.id.virus_btn1);
                     adapter.setOnItemChildClickListener(new OnItemChildClickListener() {
                         @Override
                         public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                             String temp = (String) adapter.getData().get(position);
-                            System.out.println(">>??");
+                            //System.out.println(">>??");
                             relay send = datasets.get(temp);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("item",send);
+                            bundle.putString("name",temp);
                             Intent intent = new Intent(activity,VirusDetailActivity.class);
                             intent.putExtras(bundle);
                             startActivity(intent);
                         }
                     });
-                    myview.setAdapter(adapter);
+                    //myview.setAdapter(adapter);
                 }
             }
         }

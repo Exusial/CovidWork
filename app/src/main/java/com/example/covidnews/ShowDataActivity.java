@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.covidnews.globalviews.GlobalActivity;
+import com.example.covidnews.provinceviews.ProvinceActivity;
 
 public class ShowDataActivity extends AppCompatActivity {
 
@@ -19,7 +20,7 @@ public class ShowDataActivity extends AppCompatActivity {
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ShowDataActivity.this,ProvinceActivity.class);
+                Intent intent = new Intent(ShowDataActivity.this, ProvinceActivity.class);
                 startActivity(intent);
             }
         });

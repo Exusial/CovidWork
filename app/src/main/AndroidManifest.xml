@@ -12,9 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".virusviews.VirusDetailActivity"
-            android:parentActivityName=".VirusSearchActivity"></activity>
+            android:parentActivityName=".virusviews.VirusShowActivity"></activity>
         <activity
             android:name=".virusviews.VirusShowActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".VirusSearchActivity" />
         <activity
             android:name=".VirusSearchActivity"
@@ -24,17 +25,17 @@
             android:parentActivityName=".ShowDataActivity" />
         <activity
             android:name=".ExpertActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".listviews.MainActivity" />
         <activity
-            android:name=".ProvinceActivity"
+            android:name=".provinceviews.ProvinceActivity"
             android:parentActivityName=".ShowDataActivity" />
         <activity
             android:name=".ShowDataActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".listviews.MainActivity" />
         <activity
             android:name=".SearchActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity">
+            android:parentActivityName=".listviews.MainActivity" />
+        <activity android:name=".listviews.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

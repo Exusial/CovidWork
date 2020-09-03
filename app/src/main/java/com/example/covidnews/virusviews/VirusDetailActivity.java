@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class VirusDetailActivity extends Activity {
+public class VirusDetailActivity extends AppCompatActivity {
     private RecyclerView myview;
     private TreeAdapter adapter;
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +29,15 @@ public class VirusDetailActivity extends Activity {
         setContentView(R.layout.activity_virus_detail);
         Intent intent = getIntent();
         relay temp = (relay) intent.getExtras().getSerializable("item");
+        TextView title = (TextView)findViewById(R.id.Title);
+        title.setText((String)intent.getExtras().get("name"));
         List<BaseNode> datasets = new ArrayList<>();
         RootNode n = null;
         for(int i=0;i<4;i++){
             List<BaseNode> seclist = new ArrayList<>();
             if(i==0){
+                if(temp.description==null||temp.description.equals(""))
+                    continue;
                 DesNode node = new DesNode(temp.description);
                 seclist.add(node);
                 n = new RootNode("Description",seclist);
@@ -60,7 +65,7 @@ public class VirusDetailActivity extends Activity {
                     RelationNode node = new RelationNode(entry.getRelation(),entry.isForward(),entry.getLabel());
                     seclist.add(node);
                 }
-                n = new RootNode("Properties",seclist);
+                n = new RootNode("Relations",seclist);
             }
             datasets.add(n);
         }

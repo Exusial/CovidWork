@@ -9,7 +9,7 @@
         andriod:layout_width="match_parent"
         andriod:layout_height="wrap_content"
         andriod:text="title"
-        andriod:textSize="50sp"
+        andriod:textSize="20sp"
         andriod:gravity="center"
         andriod:layout_gravity="center"
         />

@@ -1,13 +1,12 @@
 package com.example.covidnews;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.example.covidnews.listviews.MainActivity;
 
 public class SearchActivity extends Activity {
 
@@ -18,7 +17,7 @@ public class SearchActivity extends Activity {
         simg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent back = new Intent(SearchActivity.this,MainActivity.class);
+                Intent back = new Intent(SearchActivity.this, MainActivity.class);
                 startActivity(back);
             }
         });

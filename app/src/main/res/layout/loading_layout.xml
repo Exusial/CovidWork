@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:andriod="http://schemas.android.com/apk/res/android"
+    andriod:orientation="vertical"
+    andriod:layout_width="match_parent"
+    andriod:layout_height="match_parent"
+    >
+    <LinearLayout
+        andriod:id="@+id/loading"
+        andriod:layout_width="match_parent"
+        andriod:layout_height="match_parent"
+        andriod:orientation="horizontal"
+        andriod:visibility="visible"
+        andriod:layout_marginTop="300dp"
+        andriod:layout_marginLeft="100dp"
+        >
+        <ProgressBar
+            andriod:layout_width="wrap_content"
+            andriod:layout_height="wrap_content"
+            style="@android:style/Widget.ProgressBar"
+            andriod:layout_marginTop="16dp"
+            />
+        <TextView
+            andriod:layout_width="match_parent"
+            andriod:layout_height="wrap_content"
+            andriod:text="加载中..."
+            andriod:layout_marginTop="20dp"
+            andriod:layout_marginBottom="20dp"
+            andriod:gravity="left"
+            andriod:layout_marginLeft="2dp"
+            andriod:textSize="30dp"
+            />
+    </LinearLayout>
+</LinearLayout>

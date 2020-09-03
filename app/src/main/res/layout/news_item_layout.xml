@@ -5,13 +5,6 @@
     andriod:layout_height="match_parent"
     >
 
-    <ImageView
-        andriod:id="@+id/iv1"
-        andriod:layout_width="100dp"
-        andriod:layout_height="100dp"
-        andriod:scaleType="centerCrop"
-        andriod:background="#000FFF"
-        />
     <LinearLayout
         andriod:layout_width="match_parent"
         andriod:layout_height="match_parent"

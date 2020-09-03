@@ -7,7 +7,7 @@
     <androidx.recyclerview.widget.RecyclerView
         andriod:id="@+id/gview"
         andriod:layout_width="match_parent"
-        andriod:layout_height="wrap_content"
+        andriod:layout_height="match_parent"
         >
     </androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns:andriod="http://schemas.android.com/apk/res/android"
+    andriod:orientation="horizontal"
+    andriod:layout_width="wrap_content"
+    andriod:layout_height="wrap_content"
+    >
+</ListView>
