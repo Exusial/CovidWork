@@ -2,6 +2,7 @@ package com.example.covidnews;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,13 +34,11 @@ import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ListView NewList = null;
     private RefreshLayout refreshLayout;
-    private EditText search;
-    
     private static int newewst = 10;
     private static MainActivity mainActivity;
     @Override
@@ -50,10 +49,15 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         ArrayList<NewsItem> datasets = new ArrayList<>();
-        datasets.add(new NewsItem("11231","#123123","zyp是大佬"));
-        final NewsAdapter adapter = new NewsAdapter(R.layout.news_item_layout,datasets);
         RecyclerView myview = (RecyclerView)findViewById(R.id.newsview);
         myview.setLayoutManager(manager);
+        datasets.clear();
+        final NewsAdapter adapter = new NewsAdapter(R.layout.news_item_layout,datasets);
+        adapter.setUseEmpty(true);
+        datasets.clear();
+        adapter.notifyDataSetChanged();
+        View emp = getLayoutInflater().inflate(R.layout.loading_layout,null);
+        adapter.setEmptyView(emp);
         myview.setAdapter(adapter);
         Button m_btn1 = (Button)findViewById(R.id.m_btn1);
         Button m_btn2 = (Button)findViewById(R.id.m_btn2);
@@ -73,6 +77,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Thread thread1 = new Thread(){
+            public void run(){
+                NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
+                EventsParser eventsParser = EventsParser.getInstance();
+                eventsParser.ParseEvents();
+
+                while(newsDataBase.getCount() < 20);
+
+                ArrayList<News> newsArrayList = newsDataBase.getAll();
+                Random random = new Random();
+                NewsParser newsParser = new NewsParser(MainActivity.this);
+                for(int i =0; i <= 9; i++){
+                    News news = newsArrayList.get(random.nextInt(newsArrayList.size()));
+                    NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
+                    adapter.addData(ni);
+                    adapter.notifyDataSetChanged();
+                }
+                Looper.prepare();
+                Looper.loop();
+            }
+        };
+        thread1.start();
         refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setRefreshHeader(new ClassicsHeader(this));
         refreshLayout.setRefreshFooter(new ClassicsFooter(this));
@@ -95,69 +121,6 @@ public class MainActivity extends AppCompatActivity {
                     ts.start();
                 }
             });
-    }
-    /*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev){
-        if(ev.getAction()==MotionEvent.ACTION_DOWN){
-            View now = getCurrentFocus();
-            if(now==null)
-                return super.dispatchTouchEvent(ev);
-            int pos[] = {0,0};
-            now.getLocationInWindow(pos);
-            if(now instanceof EditText){
-                if(ev.getX()<pos[0]||ev.getX()>pos[0]+now.getWidth()) {
-                    if (ev.getY()<pos[1]||ev.getY()>pos[1]+now.getHeight()){
-                        search.clearFocus();
-                        IBinder tok = now.getWindowToken();
-                        if(tok!=null){
-                            InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            if(manager!=null)
-                                manager.hideSoftInputFromWindow(tok,InputMethodManager.HIDE_NOT_ALWAYS);
-                        }
-                    }
-                }
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-    private void popwindows(){
-
-        String[] list = {"123","rsdfsdf"};
-        /*
-        ListView view = (ListView) getLayoutInflater().inflate(R.layout.search_item_layout,null);
-        view.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list));
-        PopupWindow pw = new PopupWindow(view,search.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
-        pw.showAsDropDown(search);
-        pw.setFocusable(false);
-
-
-
-        final ListPopupWindow lpw = new ListPopupWindow(MainActivity.this);
-        lpw.setModal(true);
-        lpw.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list));
-        lpw.setAnchorView(search);
-        lpw.setModal(true);
-        ItemListener lis = new ItemListener(list,lpw);
-        lpw.setOnItemClickListener(lis);
-        lpw.show();
-        search.setFocusable(true);
-        //lpw.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-        //lpw.setSoftInputMode(SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-    }
-    */
-    class ItemListener implements AdapterView.OnItemClickListener{
-        ItemListener(String[] mlist_,ListPopupWindow lpw){
-            mlist = mlist_;
-            temp = lpw;
-        }
-        private String[] mlist;
-        private ListPopupWindow temp;
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            search.setText(mlist[i]);
-            temp.dismiss();
-        }
     }
 
     @SuppressLint("RestrictedApi")

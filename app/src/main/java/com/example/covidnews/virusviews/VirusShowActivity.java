@@ -62,7 +62,7 @@ public class VirusShowActivity extends AppCompatActivity {
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         myview.setLayoutManager(manager);
         adapter = new ItemAdapter(R.layout.virus_item_layout, null);
-        adapter.setEmptyView(emp);
+        //adapter.setEmptyView(emp);
         myview.setAdapter(adapter);
     }
 
