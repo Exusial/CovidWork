@@ -31,17 +31,17 @@
         <activity
             android:name=".expertview.ExpertActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".listviews.MainActivity" />
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".provinceviews.ProvinceActivity"
             android:parentActivityName=".ShowDataActivity" />
         <activity
             android:name=".ShowDataActivity"
-            android:parentActivityName=".listviews.MainActivity" />
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".SearchActivity"
-            android:parentActivityName=".listviews.MainActivity" />
-        <activity android:name=".listviews.MainActivity">
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

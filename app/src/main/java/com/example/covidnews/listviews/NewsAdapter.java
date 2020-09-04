@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class NewsAdapter extends BaseQuickAdapter<NewsItem, BaseViewHolder> {
 
-    NewsAdapter(int layid, ArrayList<NewsItem> list){
+    public NewsAdapter(int layid, ArrayList<NewsItem> list){
         super(layid,list);
     }
 

@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.covidnews.listviews.MainActivity;
-
 public class SearchActivity extends Activity {
 
     protected void onCreate(Bundle savedInstanceState) {
