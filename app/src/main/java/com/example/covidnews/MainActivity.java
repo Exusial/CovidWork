@@ -33,10 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private ListView NewList = null;
     private RefreshLayout refreshLayout;
     private EditText search;
+    
+    private static int newewst = 10;
+    private static MainActivity mainActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainActivity = this;
         refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setRefreshHeader(new ClassicsHeader(this));
         refreshLayout.setRefreshFooter(new ClassicsFooter(this));
@@ -174,6 +178,20 @@ public class MainActivity extends AppCompatActivity {
         });
         textview.setAdapter(temp);
         return super.onCreateOptionsMenu(menu);
+    }
+    
+    public void freshNews(NewsAdapter adapter, NewsItem ni, int position){
+        if(position == -1) {
+            adapter.addData(ni);
+        }
+        else{
+            adapter.addData(position, ni);
+        }
+        adapter.notifyDataSetChanged();
+    }
+    
+    public static MainActivity getMainActivity(){
+        return mainActivity;
     }
 }
 
