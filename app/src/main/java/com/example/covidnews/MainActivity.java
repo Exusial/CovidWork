@@ -73,21 +73,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         
-        NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
-        EventsParser eventsParser = EventsParser.getInstance();
-        eventsParser.ParseEvents();
-
-        while(newsDataBase.getCount() < 20);
-
-        ArrayList<News> newsArrayList = newsDataBase.getAll();
-        Random random = new Random();
-        NewsParser newsParser = new NewsParser(this);
-        for(int i =0; i <= 9; i++){
-            News news = newsArrayList.get(random.nextInt(newsArrayList.size()));
-            NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
-            adapter.addData(ni);
-            adapter.notifyDataSetChanged();
-        }
+        NewsInit init = new NewsInit(adapter);
+        init.InitPage();
         
         refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setRefreshHeader(new ClassicsHeader(this));
