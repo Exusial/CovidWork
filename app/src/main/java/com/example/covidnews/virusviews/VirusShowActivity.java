@@ -97,10 +97,10 @@ public class VirusShowActivity extends AppCompatActivity {
                 } else {
                     item.description = temp.getBaidu();
                 }
-                if (temp.getImg() == null)
+                if (eobj.get("img") == null)
                     item.image = null;
                 else
-                    item.image = temp.getImg();
+                    item.image = eobj.get("img").toString();
                 covid wrappr = JSON.toJavaObject(temp.getCOVID(), covid.class);
                 //System.out.println(wrappr.getProperties());
                 item.properties = JSONObject.parseObject(wrappr.getProperties().toString(), new TypeReference<HashMap<String, String>>(){});
@@ -160,6 +160,7 @@ public class VirusShowActivity extends AppCompatActivity {
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("item",send);
                             bundle.putString("name",temp);
+                            System.out.println(send.image);
                             Intent intent = new Intent(activity,VirusDetailActivity.class);
                             intent.putExtras(bundle);
                             startActivity(intent);
@@ -188,11 +189,6 @@ class AbsInfo{
     private String baidu;
     private String zhwiki;
     private JSONObject COVID;
-    private String img;
-
-    public String getImg() {
-        return img;
-    }
 
     public String getEnwiki() {
         return enwiki;
@@ -226,9 +222,6 @@ class AbsInfo{
         this.zhwiki = zhwiki;
     }
 
-    public void setImg(String img) {
-        this.img = img;
-    }
 }
 
 class covid{

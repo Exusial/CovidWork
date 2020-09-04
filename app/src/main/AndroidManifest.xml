@@ -11,8 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".virusviews.VirusDetailActivity"
-            android:parentActivityName=".virusviews.VirusShowActivity"></activity>
+        <activity android:name=".expertview.ExpertDetailActivity"
+            android:parentActivityName=".expertview.ExpertActivity" ></activity>
+        <activity
+            android:name=".virusviews.VirusDetailActivity"
+            android:parentActivityName=".virusviews.VirusShowActivity" />
         <activity
             android:name=".virusviews.VirusShowActivity"
             android:launchMode="singleTop"
@@ -24,8 +27,9 @@
             android:name=".globalviews.GlobalActivity"
             android:parentActivityName=".ShowDataActivity" />
         <activity
-            android:name=".ExpertActivity"
-            android:parentActivityName=".listviews.MainActivity" />
+            android:name=".expertview.ExpertActivity"
+            android:parentActivityName=".listviews.MainActivity"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".provinceviews.ProvinceActivity"
             android:parentActivityName=".ShowDataActivity" />

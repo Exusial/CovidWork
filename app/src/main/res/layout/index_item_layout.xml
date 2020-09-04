@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:andriod="http://schemas.android.com/apk/res/android"
+    andriod:orientation="horizontal"
+    andriod:layout_width="match_parent"
+    andriod:layout_height="match_parent"
+    >
+    <lecho.lib.hellocharts.view.ColumnChartView
+        andriod:id="@+id/col1"
+        andriod:layout_width="match_parent"
+        andriod:layout_height="wrap_content"
+        andriod:layout_marginLeft="30dp"/>
+</LinearLayout>

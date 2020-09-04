@@ -7,4 +7,7 @@
     <color name="colorGray">#708090</color>
     <color name="Red">#DC143C</color>
     <color name="Blue">#6495ED</color>
+    <color name="Brown">#F0E68C</color>
+    <color name="GreenCrystal">#40E0D0</color>
+    <color name="swallow_purple">#E6E6FA</color>
 </resources>
