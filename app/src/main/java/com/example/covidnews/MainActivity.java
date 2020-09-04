@@ -18,6 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.covidnews.expertview.ExpertActivity;
+import com.example.covidnews.Fresher.LoadMore;
+import com.example.covidnews.Fresher.LoadNew;
+import com.example.covidnews.NetParser.EventsParser;
+import com.example.covidnews.NetParser.NewsParser;
+import com.example.covidnews.NewsDataBase.News;
+import com.example.covidnews.NewsDataBase.NewsDataBase;
 import com.example.covidnews.listviews.NewsAdapter;
 import com.example.covidnews.listviews.NewsItem;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
@@ -41,21 +47,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainActivity = this;
-        refreshLayout = findViewById(R.id.refreshLayout);
-        refreshLayout.setRefreshHeader(new ClassicsHeader(this));
-        refreshLayout.setRefreshFooter(new ClassicsFooter(this));
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-                @Override
-                public void onRefresh(RefreshLayout refreshlayout) {
-                    refreshlayout.finishRefresh(1000/*,false*/);//传入false表示刷新失败
-                }
-            });
-            refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-                @Override
-                public void onLoadMore(RefreshLayout refreshlayout) {
-                    refreshlayout.finishLoadMore(1000/*,false*/);//传入false表示加载失败
-                }
-            });
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         ArrayList<NewsItem> datasets = new ArrayList<>();
@@ -81,6 +72,28 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        refreshLayout = findViewById(R.id.refreshLayout);
+        refreshLayout.setRefreshHeader(new ClassicsHeader(this));
+        refreshLayout.setRefreshFooter(new ClassicsFooter(this));
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+                @Override
+                public void onRefresh(RefreshLayout refreshlayout) {
+                    Thread ts = new Thread(new LoadNew(adapter, newewst));
+                    refreshlayout.finishRefresh(!ts.isAlive());//传入false表示刷新失败
+                    refreshlayout.setDisableContentWhenRefresh(true);
+                    ts.start();
+                    newewst +=5;
+                }
+            });
+            refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+                @Override
+                public void onLoadMore(RefreshLayout refreshlayout) {
+                    Thread ts = new Thread(new LoadMore(adapter));
+                    refreshlayout.finishLoadMore(!ts.isAlive());//传入false表示刷新失败
+                    refreshlayout.setDisableContentWhenLoading(true);
+                    ts.start();
+                }
+            });
     }
     /*
     @Override
