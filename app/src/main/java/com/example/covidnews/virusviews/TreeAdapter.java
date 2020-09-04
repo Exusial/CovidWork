@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.chad.library.adapter.base.entity.node.BaseExpandNode;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.example.covidnews.NetParser.ImageLoader;
 import com.example.covidnews.R;
 import com.chad.library.adapter.base.BaseNodeAdapter;
 import com.chad.library.adapter.base.entity.node.BaseNode;
@@ -208,6 +209,7 @@ class ImgNodeProvider extends BaseNodeProvider {
     @Override
     public void convert(@NotNull BaseViewHolder helper, @NotNull BaseNode data) {
         ImgNode entity = (ImgNode) data;
+        ImageLoader loader = new ImageLoader(getContext());
         //helper.setText(R.id.des_text, entity.getTitle());
     }
 

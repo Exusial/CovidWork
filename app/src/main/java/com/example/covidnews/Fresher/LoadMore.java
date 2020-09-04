@@ -27,16 +27,17 @@ public class LoadMore implements Runnable{
         NewsDataBase newsDataBase1 = NewsDataBase.getDataBase("NewsTest.db");
         ArrayList<News> newsArrayList = newsDataBase1.getAll();
         Random random = new Random();
-        for(int i =0; i <= 5; i++){
-            News news = newsArrayList.get(random.nextInt(newsArrayList.size()));
-            final NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    MainActivity.getMainActivity().freshNews(adapter, ni,-1);
-                }
-            });
+        for(int i =0; i <= 5; i++) {
+            if (i < newsArrayList.size()) {
+                News news = newsArrayList.get(random.nextInt(newsArrayList.size()));
+                final NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.getMainActivity().freshNews(adapter, ni, -1);
+                    }
+                });
+            }
         }
-
     }
 }

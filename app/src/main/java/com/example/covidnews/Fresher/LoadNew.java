@@ -29,13 +29,15 @@ public class LoadNew implements Runnable{
         ArrayList<News> newsArrayList = newsDataBase.getAll();
         int size = newsArrayList.size();
         for(int i = newest; i <= newest + 4; i ++){
-            final News news = newsArrayList.get(i);
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    MainActivity.getMainActivity().freshNews(adapter,new NewsItem(news.getTitle(), news.getTime(), null),0);
-                }
-            });
+            if(i<newsArrayList.size()) {
+                final News news = newsArrayList.get(i);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.getMainActivity().freshNews(adapter, new NewsItem(news.getTitle(), news.getTime(), null), 0);
+                    }
+                });
+            }
         }
     }
 }

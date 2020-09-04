@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         ArrayList<NewsItem> datasets = new ArrayList<>();
         datasets.add(new NewsItem("11231","#123123","zyp是大佬"));
-        NewsAdapter adapter = new NewsAdapter(R.layout.news_item_layout,datasets);
+        final NewsAdapter adapter = new NewsAdapter(R.layout.news_item_layout,datasets);
         RecyclerView myview = (RecyclerView)findViewById(R.id.newsview);
         myview.setLayoutManager(manager);
         myview.setAdapter(adapter);
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setRefreshHeader(new ClassicsHeader(this));
         refreshLayout.setRefreshFooter(new ClassicsFooter(this));

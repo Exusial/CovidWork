@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.example.covidnews.R;
-import com.example.covidnews.expertview.Expert_row;
 import com.example.covidnews.listviews.NewsItem;
 
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +38,6 @@ class NewsItemAdapter extends BaseQuickAdapter<NewsItem, BaseViewHolder>{
     }
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, NewsItem newsItem) {
-        baseViewHolder.setText();
+
     }
 }
