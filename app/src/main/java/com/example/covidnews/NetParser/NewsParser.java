@@ -25,7 +25,6 @@ public class NewsParser {
 
     //定义上下文对象
     private Context mContext;
-    private static Handler mHandler;
 
     //解决错位问题
     private Map<NewsItem, String> mNewsInfoTags = new LinkedHashMap<>();
@@ -45,9 +44,6 @@ public class NewsParser {
                 }
             };
         }
-        //实例化Handler
-        if(mHandler == null)
-            mHandler = new Handler();
         if(mPool == null)
             mPool = Executors.newFixedThreadPool(3);
     }
@@ -66,7 +62,6 @@ public class NewsParser {
         }else{
             //如果第一次运行，啥也没有，需要链接获取
             EventsParser eventsParser = EventsParser.getInstance();
-            eventsParser.GetAndDisplay(adapter, ni, id);
             return ;
         }
     }
