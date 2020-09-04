@@ -121,37 +121,4 @@ public class ExpertDetailActivity extends AppCompatActivity {
         temp = findViewById(R.id.P_number);
         temp.setText(now.params.get("pubs").toString());
     }
-
-    private void generate_graph(Expert_detail now){
-        ColumnChartView colview = findViewById(R.id.col1);
-        int subcol = 1;
-        List<Column> cols = new ArrayList<Column>();
-        List<SubcolumnValue> subcols;
-        ArrayList<String> names = new ArrayList<String>();
-        float count = 0.f;
-        ArrayList<Float> maps = new ArrayList<>();
-        for(Map.Entry<String,Integer> entry:now.tags.entrySet()){
-            subcols = new ArrayList<SubcolumnValue>();
-            maps.add(count);
-            count++;
-            names.add(entry.getKey());
-            subcols.add(new SubcolumnValue(entry.getValue(),Color.parseColor("#6495ED")));
-            Column col = new Column(subcols);
-            col.setHasLabels(true);
-            col.setHasLabelsOnlyForSelected(true);
-            cols.add(col);
-        }
-        ColumnChartData data = new ColumnChartData(cols);
-        Axis X,Y;
-        X = Axis.generateAxisFromCollection(maps,names);
-        Y = new Axis();
-        Y.setHasLines(true);
-        Y.setName("");
-        data.setAxisXBottom(X);
-        data.setAxisYLeft(Y);
-        colview.setColumnChartData(data);
-        Viewport viewport = new Viewport(1,colview.getMaximumViewport().height()*1.25f,names.size()>5?5:names.size(),0);
-        colview.setCurrentViewport(viewport);
-        colview.moveTo(1,0);
-    }
 }

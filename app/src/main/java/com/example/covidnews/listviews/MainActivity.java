@@ -1,8 +1,12 @@
 package com.example.covidnews.listviews;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -12,8 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -60,15 +67,6 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView myview = (RecyclerView)findViewById(R.id.newsview);
         myview.setLayoutManager(manager);
         myview.setAdapter(adapter);
-        search = (EditText)findViewById(R.id.sed1);
-        search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if(b){
-                    popwindows();
-                }
-            }
-        });
         Button m_btn1 = (Button)findViewById(R.id.m_btn1);
         Button m_btn2 = (Button)findViewById(R.id.m_btn2);
         Button m_btn3 = (Button)findViewById(R.id.m_btn3);
@@ -87,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+    /*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev){
         if(ev.getAction()==MotionEvent.ACTION_DOWN){
@@ -123,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         pw.showAsDropDown(search);
         pw.setFocusable(false);
 
-         */
+
 
         final ListPopupWindow lpw = new ListPopupWindow(MainActivity.this);
         lpw.setModal(true);
@@ -137,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         //lpw.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
         //lpw.setSoftInputMode(SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
-
+    */
     class ItemListener implements AdapterView.OnItemClickListener{
         ItemListener(String[] mlist_,ListPopupWindow lpw){
             mlist = mlist_;
@@ -149,6 +147,40 @@ public class MainActivity extends AppCompatActivity {
             search.setText(mlist[i]);
             temp.dismiss();
         }
+    }
+
+    @SuppressLint("RestrictedApi")
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.main_menu,menu);
+        final MenuItem searchItem = menu.findItem(R.id.menu_search);
+        SearchView view = (SearchView) searchItem.getActionView();
+        view.setQueryHint("搜索新闻");
+        view.setSubmitButtonEnabled(true);
+        view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        final SearchView.SearchAutoComplete textview = view.findViewById(R.id.search_src_text);
+        textview.setThreshold(0);
+        final ArrayList<String> history = new ArrayList<>();
+        history.add("?????");
+        history.add("!!!!");
+        ArrayAdapter<String> temp = new ArrayAdapter<String>(this,R.layout.search_item_layout,history);
+        textview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                textview.setText(history.get(i));
+            }
+        });
+        textview.setAdapter(temp);
+        return super.onCreateOptionsMenu(menu);
     }
 }
 

@@ -1,10 +1,6 @@
 package com.example.covidnews.expertview;
 import android.graphics.Color;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.node.BaseExpandNode;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.example.covidnews.R;
@@ -16,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.Column;
 import lecho.lib.hellocharts.model.ColumnChartData;
@@ -196,7 +191,7 @@ class FrontProvider extends BaseNodeProvider {
         datasets.setAxisXBottom(X);
         datasets.setAxisYLeft(Y);
         colview.setColumnChartData(datasets);
-        Viewport viewport = new Viewport(1,colview.getMaximumViewport().height()*1.25f,names.size()>5?5:names.size(),0);
+        Viewport viewport = new Viewport(1,colview.getMaximumViewport().height()*1.25f,names.size()>4?4:names.size(),0);
         colview.setCurrentViewport(viewport);
         colview.moveTo(1,0);
 

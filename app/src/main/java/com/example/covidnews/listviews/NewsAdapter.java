@@ -17,29 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-class NewsItem{
-    private String title;
-    private String time;
-    private String description;
-
-    public NewsItem(String title,String time,String description){
-        this.title = title;
-        this.time = time;
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-}
 public class NewsAdapter extends BaseQuickAdapter<NewsItem, BaseViewHolder> {
 
     NewsAdapter(int layid, ArrayList<NewsItem> list){
