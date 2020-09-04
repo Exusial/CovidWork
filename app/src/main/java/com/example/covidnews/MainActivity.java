@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         ArrayList<NewsItem> datasets = new ArrayList<>();
         datasets.add(new NewsItem("11231","#123123","zyp是大佬"));
-        NewsAdapter adapter = new NewsAdapter(R.layout.news_item_layout,datasets);
+        final NewsAdapter adapter = new NewsAdapter(R.layout.news_item_layout,datasets);
         RecyclerView myview = (RecyclerView)findViewById(R.id.newsview);
         myview.setLayoutManager(manager);
         myview.setAdapter(adapter);
@@ -72,6 +72,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        
+        NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
+        EventsParser eventsParser = EventsParser.getInstance();
+        eventsParser.ParseEvents();
+
+        while(newsDataBase.getCount() < 20);
+
+        ArrayList<News> newsArrayList = newsDataBase.getAll();
+        Random random = new Random();
+        NewsParser newsParser = new NewsParser(this);
+        for(int i =0; i <= 9; i++){
+            News news = newsArrayList.get(random.nextInt(newsArrayList.size()));
+            NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
+            adapter.addData(ni);
+            adapter.notifyDataSetChanged();
+        }
+        
         refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setRefreshHeader(new ClassicsHeader(this));
         refreshLayout.setRefreshFooter(new ClassicsFooter(this));
