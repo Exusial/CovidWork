@@ -30,7 +30,7 @@ public class VirusDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         relay temp = (relay) intent.getExtras().getSerializable("item");
         TextView title = (TextView)findViewById(R.id.Title);
-        title.setText((String)intent.getExtras().get("name"));
+        title.setText(temp.name);
         List<BaseNode> datasets = new ArrayList<>();
         RootNode n = null;
         for(int i=0;i<4;i++){

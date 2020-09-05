@@ -84,13 +84,13 @@ class ExpDesNode extends BaseNode{
 }
 
 class FrontNode extends BaseNode{
-    private Map<String,Integer> Title;
+    private Map<String,Float> Title;
 
-    public FrontNode(Map<String,Integer> title){
+    public FrontNode(Map<String,Float> title){
         this.Title = title;
     }
 
-    public Map<String,Integer> getTitle() {
+    public Map<String,Float> getTitle() {
         return Title;
     }
 
@@ -171,7 +171,7 @@ class FrontProvider extends BaseNodeProvider {
         ArrayList<String> names = new ArrayList<String>();
         float count = 0.f;
         ArrayList<Float> maps = new ArrayList<>();
-        for(Map.Entry<String,Integer> entry:entity.getTitle().entrySet()){
+        for(Map.Entry<String,Float> entry:entity.getTitle().entrySet()){
             subcols = new ArrayList<SubcolumnValue>();
             maps.add(count);
             count++;

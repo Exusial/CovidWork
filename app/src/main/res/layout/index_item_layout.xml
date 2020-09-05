@@ -3,6 +3,7 @@
     andriod:orientation="horizontal"
     andriod:layout_width="match_parent"
     andriod:layout_height="match_parent"
+    andriod:layout_marginTop="6dp"
     >
     <lecho.lib.hellocharts.view.ColumnChartView
         andriod:id="@+id/col1"

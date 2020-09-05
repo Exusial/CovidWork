@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListPopupWindow;
 import android.widget.ListView;
 
@@ -18,6 +19,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.covidnews.NewsDataBase.NewsInit;
 import com.example.covidnews.expertview.ExpertActivity;
 import com.example.covidnews.Fresher.LoadMore;
 import com.example.covidnews.Fresher.LoadNew;
@@ -27,6 +29,7 @@ import com.example.covidnews.NewsDataBase.News;
 import com.example.covidnews.NewsDataBase.NewsDataBase;
 import com.example.covidnews.listviews.NewsAdapter;
 import com.example.covidnews.listviews.NewsItem;
+import com.example.covidnews.newsviews.NewsItemActivity;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -53,10 +56,8 @@ public class MainActivity extends AppCompatActivity {
         myview.setLayoutManager(manager);
         datasets.clear();
         final NewsAdapter adapter = new NewsAdapter(R.layout.news_item_layout,datasets);
-        adapter.setUseEmpty(true);
         datasets.clear();
-        adapter.notifyDataSetChanged();
-        View emp = getLayoutInflater().inflate(R.layout.loading_layout,null);
+        View emp = getLayoutInflater().inflate(R.layout.entering_layout,null);
         adapter.setEmptyView(emp);
         myview.setAdapter(adapter);
         Button m_btn1 = (Button)findViewById(R.id.m_btn1);
@@ -77,28 +78,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Thread thread1 = new Thread(){
-            public void run(){
-                NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
-                EventsParser eventsParser = EventsParser.getInstance();
-                eventsParser.ParseEvents();
+        
+        NewsInit init = new NewsInit(adapter);
+        init.InitPage();
 
-                while(newsDataBase.getCount() < 20);
-
-                ArrayList<News> newsArrayList = newsDataBase.getAll();
-                Random random = new Random();
-                NewsParser newsParser = new NewsParser(MainActivity.this);
-                for(int i =0; i <= 9; i++){
-                    News news = newsArrayList.get(random.nextInt(newsArrayList.size()));
-                    NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
-                    adapter.addData(ni);
-                    adapter.notifyDataSetChanged();
-                }
-                Looper.prepare();
-                Looper.loop();
-            }
-        };
-        thread1.start();
         refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setRefreshHeader(new ClassicsHeader(this));
         refreshLayout.setRefreshFooter(new ClassicsFooter(this));
@@ -133,6 +116,11 @@ public class MainActivity extends AppCompatActivity {
         view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Intent intent = new Intent(MainActivity.this,NewsItemActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("key",query);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 return false;
             }
 

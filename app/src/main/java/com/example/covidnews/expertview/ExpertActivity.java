@@ -5,10 +5,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.TextView;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -59,7 +62,7 @@ class Expert_detail extends Expert_row implements Serializable {
     public String homepage;
     public String[] experience;
     public String edu;
-    TreeMap<String,Integer> tags;
+    TreeMap<String,Float> tags;
     Expert_detail(String name,String professions,Map<String,Object> params,String inst){
         super(name,professions,params,inst);
         emails = new ArrayList<>();
@@ -152,10 +155,10 @@ public class ExpertActivity extends AppCompatActivity {
                 if(profile.get("homepage")!=null)
                     temp.homepage = profile.get("homepage").toString();
                 ArrayList<String> tags = JSON.toJavaObject((JSONArray) eobj.get("tags"),ArrayList.class);
-                ArrayList<Integer> counts = JSON.toJavaObject((JSONArray) eobj.get("tags_score"),ArrayList.class);
+                ArrayList<Object> counts = JSON.toJavaObject((JSONArray) eobj.get("tags_score"),ArrayList.class);
                 if(tags!=null) {
                     for (int j = 0; j < tags.size(); j++) {
-                        temp.tags.put(tags.get(j), counts.get(j));
+                        temp.tags.put(tags.get(j), Float.parseFloat(counts.get(j).toString()));
                     }
                 }
                 experts.add(temp);
@@ -202,6 +205,10 @@ public class ExpertActivity extends AppCompatActivity {
                     adapter.setList(experts);
                     adapter.notifyDataSetChanged();
                     adapter.addChildClickViewIds(R.id.ntitle1);
+                    Typeface tf = Typeface.createFromAsset(getAssets(),"fangkai.TTF");
+                    TextView textView = activity.findViewById(R.id.Title);
+                    textView.setTypeface(tf);
+                    textView.setVisibility(View.VISIBLE);
                     adapter.setOnItemChildClickListener(new OnItemChildClickListener() {
                         @Override
                         public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {

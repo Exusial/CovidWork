@@ -1,6 +1,7 @@
 package com.example.covidnews.virusviews;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.chad.library.adapter.base.entity.node.BaseExpandNode;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -210,6 +211,8 @@ class ImgNodeProvider extends BaseNodeProvider {
     public void convert(@NotNull BaseViewHolder helper, @NotNull BaseNode data) {
         ImgNode entity = (ImgNode) data;
         ImageLoader loader = new ImageLoader(getContext());
+        ImageView view = helper.getView(R.id.v_img);
+        loader.display(view,entity.getTitle());
         //helper.setText(R.id.des_text, entity.getTitle());
     }
 

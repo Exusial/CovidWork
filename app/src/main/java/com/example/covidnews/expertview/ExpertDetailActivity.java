@@ -7,11 +7,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.entity.node.BaseNode;
+import com.example.covidnews.NetParser.ImageLoader;
 import com.example.covidnews.R;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
@@ -41,15 +43,16 @@ public class ExpertDetailActivity extends AppCompatActivity {
         myview = findViewById(R.id.rview);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
+        ImageView iview = findViewById(R.id.de_avatar);
+        ImageLoader loader = new ImageLoader(this);
+        loader.display(iview,now.avatar);
         myview.setLayoutManager(manager);
         TextView name =  findViewById(R.id.Name);
         TextView position = findViewById(R.id.position);
         TextView inst = findViewById(R.id.inst);
         name.setText(now.name);
-        ImageView img = findViewById(R.id.de_avatar);
-        
-        if(now.position!=null){
-            position.setText(now.position);
+        if(now.professions!=null){
+            position.setText(now.professions);
         }
         else
             position.setVisibility(View.GONE);
@@ -70,7 +73,9 @@ public class ExpertDetailActivity extends AppCompatActivity {
             ExpRootNode temp = null;
             if(i==0){
                 if(now.description!=null){
-                    ExpDesNode des = new ExpDesNode(now.description.replaceAll("<br><br>","\n"));
+                    String sdes = now.description.replaceAll("<br><br>","\n");
+                    String ff = sdes.replaceAll("<br>","\n");
+                    ExpDesNode des = new ExpDesNode(ff);
                     List<BaseNode> deslist = new ArrayList<>();
                     deslist.add(des);
                     temp = new ExpRootNode("Description",deslist);

@@ -8,9 +8,11 @@
         andriod:id="@+id/Title"
         andriod:layout_width="match_parent"
         andriod:layout_height="wrap_content"
-        andriod:text="title"
+        andriod:text="新冠学者"
         andriod:textSize="40sp"
+        andriod:layout_marginLeft="5dp"
         andriod:layout_gravity="center"
+        andriod:visibility="invisible"
         />
     <androidx.recyclerview.widget.RecyclerView
         andriod:id="@+id/rview"

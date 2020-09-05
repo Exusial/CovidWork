@@ -11,8 +11,10 @@
                 andriod:orientation="horizontal">
                 <ImageView
                     andriod:id="@+id/de_avatar"
-                    andriod:layout_width="wrap_content"
-                    andriod:layout_height="wrap_content"
+                    andriod:layout_width="100dp"
+                    andriod:layout_height="100dp"
+                    andriod:layout_marginTop="5dp"
+                    andriod:layout_marginLeft="5dp"
                     andriod:src="@color/swallow_purple"
                     />
                 <LinearLayout
@@ -24,19 +26,21 @@
                         andriod:layout_width="match_parent"
                         andriod:layout_height="wrap_content"
                         andriod:text="title"
-                        andriod:textSize="20sp"
+                        andriod:textSize="25sp"
                         andriod:layout_gravity="center"
                         />
                     <TextView
                         andriod:id="@+id/position"
                         andriod:layout_width="match_parent"
                         andriod:layout_height="wrap_content"
+                        andriod:textSize="15dp"
                         andriod:text="position"
                         />
                     <TextView
                         andriod:id="@+id/inst"
                         andriod:layout_width="match_parent"
                         andriod:layout_height="wrap_content"
+                        andriod:textSize="15dp"
                         andriod:text="inst"/>
                     <LinearLayout
                         andriod:orientation="horizontal"
@@ -45,6 +49,7 @@
                         andriod:background="@color/colorBlue"
                         andriod:paddingRight="4dp"
                         andriod:id="@+id/chart"
+                        andriod:layout_marginTop="7dp"
                         >
                         <TextView
                             andriod:id="@+id/htitle"
@@ -124,9 +129,9 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        <androidx.recyclerview.widget.RecyclerView
-            andriod:id="@+id/rview"
-            andriod:layout_width="match_parent"
-            andriod:layout_height="wrap_content">
-        </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        andriod:id="@+id/rview"
+        andriod:layout_width="match_parent"
+        andriod:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>

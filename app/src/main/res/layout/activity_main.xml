@@ -4,11 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <ImageView
+        android:id="@+id/entering"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/entering"
+        android:scaleType="centerCrop"/>
     <LinearLayout
         android:id="@+id/mll2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="visible">
 
         <Button
             android:id="@+id/m_btn1"

@@ -9,8 +9,9 @@
         andriod:layout_width="match_parent"
         andriod:layout_height="wrap_content"
         andriod:text="title"
-        andriod:textSize="20sp"
+        andriod:textSize="40sp"
         andriod:gravity="center"
+        andriod:textStyle="bold"
         andriod:layout_gravity="center"
         />
     <androidx.recyclerview.widget.RecyclerView

@@ -35,8 +35,7 @@ import java.util.Map;
 public class VirusShowActivity extends AppCompatActivity {
 
     public static String name;
-    public static HashMap<String,relay> datasets;
-    public static ArrayList<String> names;
+    public static ArrayList<relay> datasets;
     private SafeHandler handler;
     public static RecyclerView myview;
     private static ItemAdapter adapter;
@@ -47,8 +46,7 @@ public class VirusShowActivity extends AppCompatActivity {
         setContentView(R.layout.activity_virus_show);
         Bundle bundle = getIntent().getExtras();
         name = (String) bundle.get("name");
-        names = new ArrayList<String>();
-        datasets = new HashMap<String,relay>();
+        datasets = new ArrayList<>();
         handler = new SafeHandler(this);
         myview = (RecyclerView)findViewById(R.id.gview);
         Thread thread = new Thread() {
@@ -85,9 +83,9 @@ public class VirusShowActivity extends AppCompatActivity {
             JSONArray nested = map.get("data");
             for (int i = 0; i < nested.size(); i++) {
                 JSONObject eobj = nested.getJSONObject(i);
-                names.add(eobj.get("label").toString());
-                AbsInfo temp = JSON.toJavaObject((JSONObject)eobj.get("abstractInfo"), AbsInfo.class);
                 relay item = new relay();
+                item.name = eobj.get("label").toString();
+                AbsInfo temp = JSON.toJavaObject((JSONObject)eobj.get("abstractInfo"), AbsInfo.class);
                 if (temp.getBaidu() == "") {
                     if (temp.getEnwiki() == "") {
                         item.description = temp.getZhwiki();
@@ -107,9 +105,9 @@ public class VirusShowActivity extends AppCompatActivity {
                 for (int j = 0; j < wrappr.getRelations().size(); j++) {
                     item.relations.add(JSON.toJavaObject(wrappr.getRelations().getJSONObject(j), relation.class));
                 }
-                datasets.put(eobj.get("label").toString(),item);
+                datasets.add(item);
             }
-            if(names.size()!=0)
+            if(datasets.size()!=0)
                 msg.what = 1;
             else
                 msg.what = 0;
@@ -148,18 +146,16 @@ public class VirusShowActivity extends AppCompatActivity {
                 final VirusShowActivity activity = (VirusShowActivity)ref.get();
                 if(activity!=null) {
                     //activity.findViewById(R.id.layout_emp).setVisibility(View.GONE);
-                    adapter.setList(names);
+                    adapter.setList(datasets);
                     adapter.notifyDataSetChanged();
-                    adapter.addChildClickViewIds(R.id.virus_btn1);
+                    adapter.addChildClickViewIds(R.id.ntitle1);
                     adapter.setOnItemChildClickListener(new OnItemChildClickListener() {
                         @Override
                         public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                            String temp = (String) adapter.getData().get(position);
                             //System.out.println(">>??");
-                            relay send = datasets.get(temp);
+                            relay send = datasets.get(position);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("item",send);
-                            bundle.putString("name",temp);
                             System.out.println(send.image);
                             Intent intent = new Intent(activity,VirusDetailActivity.class);
                             intent.putExtras(bundle);
@@ -172,12 +168,12 @@ public class VirusShowActivity extends AppCompatActivity {
         }
     }
 }
-
 class relay implements Serializable {
     public HashMap<String,String> properties;
     public String image;
     public ArrayList<relation> relations;
     public String description;
+    public String name;
 
     relay(){
         relations = new ArrayList<relation>();

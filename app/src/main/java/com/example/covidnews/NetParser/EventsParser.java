@@ -29,15 +29,10 @@ public class EventsParser {
 
     private static EventsParser eventsParser = null;
 
-    private Handler mHandler;
-
     private EventsParser(){
         if(mPool == null){
             //只能够也只需要由一个线程完成
             mPool = Executors.newFixedThreadPool(1);
-        }
-        if(mHandler == null){
-            mHandler = new Handler();
         }
     }
 
@@ -75,33 +70,9 @@ public class EventsParser {
         return event;
     }
 
-    private void display(NewsAdapter adapter, NewsItem ni, String id){
-        NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
-        News news = newsDataBase.getOneData(id);
-        if(news != null) {
-            news = newsDataBase.getOneData(id);
-            ni.setTitle(news.getTitle());
-            ni.setTime(news.getTime());
-            ni.setDescription(null);
-            adapter.addData(ni);
-            adapter.notifyDataSetChanged();
-        }
-    }
-
     //更新数据
     private class dataParseEvents implements Runnable {
-        NewsAdapter adapter = null;
-        NewsItem ni = null;
-        String id = null;
-
         public dataParseEvents(){}
-
-        public dataParseEvents(NewsAdapter adapter, NewsItem ni, String id){
-            this.adapter = adapter;
-            this.ni = ni;
-            this.id = id;
-        }
-
         @Override
         public void run() {
             Events events = GetJson();
@@ -115,7 +86,6 @@ public class EventsParser {
                 for (int i = size - 1; i >=0; i--) {
                     Data data = datas.get(i);
                     News news = newsDataBase.getOneData(data.get_id());
-                    //如果数据库中没有,则加入
                     if (news == null) {
                         news = new News();
                         news.setId(data.get_id());
@@ -130,24 +100,10 @@ public class EventsParser {
                     }
                 }
             }
-            //如果不为空
-            if(id != null){
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        display(adapter, ni, id);
-                    }
-                });
-            }
         }
     }
 
     public void ParseEvents(){
         mPool.execute(new dataParseEvents());
-    }
-
-    //不推荐使用该方法，仅供测试使用
-    public void GetAndDisplay(NewsAdapter adapter, NewsItem ni, String id){
-        mPool.execute(new dataParseEvents(adapter, ni, id));
     }
 }
