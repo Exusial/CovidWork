@@ -19,13 +19,13 @@ public class NewsFilter {
         return newsFilter;
     }
 
-    public ArrayList<News> GetTypes(String[] Types){
+    public ArrayList<News> GetTypes(String[] Types, int limit, int offset){
         NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
-        return newsDataBase.GetTypes(Types);
+        return newsDataBase.GetTypes(Types, limit, offset);
     }
 
-    public ArrayList<News> GetTypes(ArrayList<String> Types){
+    public ArrayList<News> GetTypes(ArrayList<String> Types, int limit, int offset){
         NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
-        return newsDataBase.GetTypes(Types);
+        return newsDataBase.GetTypes(Types, limit, offset);
     }
 }
