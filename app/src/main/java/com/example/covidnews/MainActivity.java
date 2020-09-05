@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +29,7 @@ import com.example.covidnews.NetParser.NewsParser;
 import com.example.covidnews.NewsDataBase.News;
 import com.example.covidnews.NewsDataBase.NewsDataBase;
 import com.example.covidnews.listviews.NewsAdapter;
+import com.example.covidnews.listviews.NewsFragment;
 import com.example.covidnews.listviews.NewsItem;
 import com.example.covidnews.newsviews.NewsItemActivity;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
@@ -37,18 +39,24 @@ import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static int max_item = 3;
+    private List<NewsFragment> fragments;
     private RefreshLayout refreshLayout;
     private static int newewst = 10;
     private static MainActivity mainActivity;
+    public static boolean all[];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainActivity = this;
+        fragments = new ArrayList<>();
+        all = new boolean[3];
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         ArrayList<NewsItem> datasets = new ArrayList<>();

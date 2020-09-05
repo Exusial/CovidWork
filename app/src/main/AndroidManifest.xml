@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".newsviews.NewsItemActivity"></activity>
+        <activity android:name=".listviews.KindActivity"></activity>
+        <activity android:name=".newsviews.NewsItemActivity" />
         <activity
             android:name=".expertview.ExpertDetailActivity"
             android:parentActivityName=".expertview.ExpertActivity" />
@@ -27,24 +28,24 @@
             android:parentActivityName=".ShowDataActivity" />
         <activity
             android:name=".globalviews.GlobalActivity"
-            android:parentActivityName=".ShowDataActivity"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:parentActivityName=".ShowDataActivity" />
         <activity
             android:name=".expertview.ExpertActivity"
             android:launchMode="singleTask"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".provinceviews.ProvinceActivity"
-            android:parentActivityName=".ShowDataActivity"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:parentActivityName=".ShowDataActivity" />
         <activity
             android:name=".ShowDataActivity"
-            android:parentActivityName=".MainActivity"
-            />
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".SearchActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
