@@ -14,6 +14,7 @@
     andriod:layout_width="match_parent"
     andriod:layout_height="wrap_content"
     andriod:orientation="horizontal"
+    andriod:animateLayoutChanges="true"
     >
     <Button
         andriod:layout_width="wrap_content"
@@ -41,6 +42,7 @@
         andriod:layout_width="match_parent"
         andriod:layout_height="wrap_content"
         andriod:orientation="horizontal"
+        andriod:animateLayoutChanges="true"
         >
         <Button
             andriod:layout_width="wrap_content"

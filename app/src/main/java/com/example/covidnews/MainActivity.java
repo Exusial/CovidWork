@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
         mainActivity = this;
         titles = new ArrayList<>();
         titles.add("All");
-        titles.add("News");
-        titles.add("Paper");
+        titles.add("NEWS");
+        titles.add("PAPER");
         fragments = new ArrayList<>();
         save_fragments = new ArrayList<>();
         save_fragments.add(NewsFragment.newInstance("ALL"));
@@ -112,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
         fadatper = new Fadatper(getSupportFragmentManager(),FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         pager.setAdapter(fadatper);
         layout.setupWithViewPager(pager);
-
     }
 
     @SuppressLint("RestrictedApi")

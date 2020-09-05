@@ -1,17 +1,14 @@
 package com.example.covidnews.listviews;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
@@ -19,13 +16,10 @@ import com.example.covidnews.MainActivity;
 import com.example.covidnews.NetParser.ImageLoader;
 import com.example.covidnews.R;
 import com.example.covidnews.expertview.DetailAdapter;
-
 import org.w3c.dom.ls.LSException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import dalvik.system.DelegateLastClassLoader;
 
 public class KindActivity extends AppCompatActivity {
@@ -55,6 +49,8 @@ public class KindActivity extends AppCompatActivity {
         k_btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(MainActivity.max_item==1)
+                    return;
                 k_btn4.setVisibility(View.VISIBLE);
                 k_btn1.setVisibility(View.GONE);
                 MainActivity.max_item -= 1;
@@ -73,6 +69,8 @@ public class KindActivity extends AppCompatActivity {
         k_btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(MainActivity.max_item==1)
+                    return;
                 k_btn5.setVisibility(View.VISIBLE);
                 k_btn2.setVisibility(View.GONE);
                 MainActivity.max_item -= 1;
@@ -91,6 +89,8 @@ public class KindActivity extends AppCompatActivity {
         k_btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(MainActivity.max_item==1)
+                    return;
                 k_btn6.setVisibility(View.VISIBLE);
                 k_btn3.setVisibility(View.GONE);
                 MainActivity.max_item -= 1;
