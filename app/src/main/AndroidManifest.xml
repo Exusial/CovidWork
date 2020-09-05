@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".listviews.KindActivity"></activity>
+        <activity android:name=".listviews.KindActivity"
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".newsviews.NewsItemActivity" />
         <activity
             android:name=".expertview.ExpertDetailActivity"

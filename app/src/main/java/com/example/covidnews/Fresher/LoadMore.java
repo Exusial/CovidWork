@@ -2,10 +2,13 @@ package com.example.covidnews.Fresher;
 
 import android.os.Handler;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.covidnews.MainActivity;
 import com.example.covidnews.NewsDataBase.News;
 import com.example.covidnews.NewsDataBase.NewsDataBase;
 import com.example.covidnews.listviews.NewsAdapter;
+import com.example.covidnews.listviews.NewsFragment;
 import com.example.covidnews.listviews.NewsItem;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
@@ -16,10 +19,11 @@ public class LoadMore implements Runnable{
     private Handler mHandler;
     private NewsAdapter adapter;
     private RefreshLayout refreshLayout;
-
-    public LoadMore(NewsAdapter adapter){
+    private NewsFragment fragment;
+    public LoadMore(NewsAdapter adapter, NewsFragment fragment){
         this.adapter = adapter;
         mHandler = new Handler();
+        this.fragment = fragment;
     }
 
     @Override
@@ -34,7 +38,7 @@ public class LoadMore implements Runnable{
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        MainActivity.getMainActivity().freshNews(adapter, ni, -1);
+                        fragment.freshNews(adapter, ni, -1);
                     }
                 });
             }

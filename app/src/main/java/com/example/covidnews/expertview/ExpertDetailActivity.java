@@ -39,7 +39,7 @@ public class ExpertDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_expert_detail);
         Bundle bundle = getIntent().getExtras();
         Expert_detail now = (Expert_detail) bundle.getSerializable("item");
-        System.out.println(now);
+        //System.out.println(now);
         myview = findViewById(R.id.rview);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);

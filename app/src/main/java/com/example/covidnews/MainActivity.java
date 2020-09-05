@@ -14,11 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.ListPopupWindow;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.covidnews.NewsDataBase.NewsInit;
 import com.example.covidnews.expertview.ExpertActivity;
@@ -28,10 +33,12 @@ import com.example.covidnews.NetParser.EventsParser;
 import com.example.covidnews.NetParser.NewsParser;
 import com.example.covidnews.NewsDataBase.News;
 import com.example.covidnews.NewsDataBase.NewsDataBase;
+import com.example.covidnews.listviews.KindActivity;
 import com.example.covidnews.listviews.NewsAdapter;
 import com.example.covidnews.listviews.NewsFragment;
 import com.example.covidnews.listviews.NewsItem;
 import com.example.covidnews.newsviews.NewsItemActivity;
+import com.google.android.material.tabs.TabLayout;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -39,38 +46,53 @@ import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT;
 
 public class MainActivity extends AppCompatActivity {
 
     public static int max_item = 3;
-    private List<NewsFragment> fragments;
+    public static ArrayList<NewsFragment> save_fragments;
+    public static ArrayList<NewsFragment> fragments;
+    public static ArrayList<String> titles;
+    public static HashMap<String,Integer> map;
     private RefreshLayout refreshLayout;
-    private static int newewst = 10;
     private static MainActivity mainActivity;
-    public static boolean all[];
+    public static Integer all[] = {0,0,0};
+    public static Fadatper fadatper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainActivity = this;
+        titles = new ArrayList<>();
+        titles.add("All");
+        titles.add("News");
+        titles.add("Paper");
         fragments = new ArrayList<>();
-        all = new boolean[3];
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        ArrayList<NewsItem> datasets = new ArrayList<>();
-        RecyclerView myview = (RecyclerView)findViewById(R.id.newsview);
-        myview.setLayoutManager(manager);
-        datasets.clear();
-        final NewsAdapter adapter = new NewsAdapter(R.layout.news_item_layout,datasets);
-        datasets.clear();
-        View emp = getLayoutInflater().inflate(R.layout.entering_layout,null);
-        adapter.setEmptyView(emp);
-        myview.setAdapter(adapter);
-        Button m_btn1 = (Button)findViewById(R.id.m_btn1);
-        Button m_btn2 = (Button)findViewById(R.id.m_btn2);
-        Button m_btn3 = (Button)findViewById(R.id.m_btn3);
+        save_fragments = new ArrayList<>();
+        save_fragments.add(NewsFragment.newInstance("ALL"));
+        save_fragments.add(NewsFragment.newInstance("NEWS"));
+        save_fragments.add(NewsFragment.newInstance("PAPER"));
+        map = new HashMap<String,Integer>();
+        map.put("ALL",0);
+        map.put("NEWS",1);
+        map.put("PAPER",2);
+        for(NewsFragment ff:save_fragments)
+            fragments.add(ff);
+        Button m_btn1 = findViewById(R.id.m_btn1);
+        Button m_btn2 = findViewById(R.id.m_btn2);
+        Button m_btn3 = findViewById(R.id.m_btn3);
+        m_btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, KindActivity.class);
+                startActivity(intent);
+            }
+        });
         m_btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,33 +107,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        TabLayout layout = findViewById(R.id.tab_layout);
+        ViewPager pager = findViewById(R.id.viewPager);
+        fadatper = new Fadatper(getSupportFragmentManager(),FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        pager.setAdapter(fadatper);
+        layout.setupWithViewPager(pager);
 
-        
-        NewsInit init = new NewsInit(adapter);
-        init.InitPage();
-
-        refreshLayout = findViewById(R.id.refreshLayout);
-        refreshLayout.setRefreshHeader(new ClassicsHeader(this));
-        refreshLayout.setRefreshFooter(new ClassicsFooter(this));
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-                @Override
-                public void onRefresh(RefreshLayout refreshlayout) {
-                    Thread ts = new Thread(new LoadNew(adapter, newewst));
-                    refreshlayout.finishRefresh(!ts.isAlive());//传入false表示刷新失败
-                    refreshlayout.setDisableContentWhenRefresh(true);
-                    ts.start();
-                    newewst +=5;
-                }
-            });
-            refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-                @Override
-                public void onLoadMore(RefreshLayout refreshlayout) {
-                    Thread ts = new Thread(new LoadMore(adapter));
-                    refreshlayout.finishLoadMore(!ts.isAlive());//传入false表示刷新失败
-                    refreshlayout.setDisableContentWhenLoading(true);
-                    ts.start();
-                }
-            });
     }
 
     @SuppressLint("RestrictedApi")
@@ -165,6 +166,31 @@ public class MainActivity extends AppCompatActivity {
     
     public static MainActivity getMainActivity(){
         return mainActivity;
+    }
+
+    public class Fadatper extends FragmentPagerAdapter{
+
+        public Fadatper(@NonNull FragmentManager fm, int behavior) {
+            super(fm, behavior);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return max_item;
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            System.out.println(titles);
+            return titles.get(position);
+        }
     }
 }
 

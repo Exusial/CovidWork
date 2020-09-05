@@ -50,6 +50,7 @@ public class NewsInit {
                     }
                 });
             }
+            /*
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -58,6 +59,8 @@ public class NewsInit {
                     layout.setVisibility(View.GONE);
                 }
             });
+
+             */
         }
     }
 }
