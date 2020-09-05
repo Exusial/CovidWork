@@ -4,7 +4,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.covidnews.MainActivity;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -84,6 +87,20 @@ public class NewsDataBase {
         newsDao.insertOrReplace(news);
     }
 
+    //保存多条新闻到数据库
+    private synchronized void saveDataPRI(ArrayList<News> news){
+        newsDao.insertOrReplaceInTx(news);
+    }
+
+    public void saveData(final ArrayList<News> news){
+        mPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                saveDataPRI(news);
+            }
+        });
+    }
+
     public void saveOneData(News news){
         mPool.execute(new DataBaseSaver(news));
     }
@@ -139,5 +156,41 @@ public class NewsDataBase {
     //查询有多少数据
     public long getCount(){
         return newsDao.count();
+    }
+
+    //条件查询——类别
+    public ArrayList<News> GetTypes(String[] types){
+        ArrayList<News> news = new ArrayList<>();
+        if(types == null){
+            return getAll();
+        }
+        int count = types.length;
+        switch(count) {
+            case 1:
+                news = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Type.eq(types[0]))
+                        .orderAsc(NewsDao.Properties.Time).list();
+                break;
+            default:
+                news = getAll();
+                break;
+        }
+        return news;
+    }
+
+    //查询类别
+    public ArrayList<News> GetTypes(ArrayList<String> types){
+        ArrayList<News> news = new ArrayList<>();
+        if(types == null)
+            return getAll();
+        switch(types.size()) {
+            case 1:
+                news = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Type.eq(types.get(0)))
+                    .orderAsc(NewsDao.Properties.Time).list();
+                break;
+            default:
+                news = getAll();
+                break;
+        }
+        return news;
     }
 }
