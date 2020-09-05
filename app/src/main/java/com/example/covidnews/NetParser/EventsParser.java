@@ -81,8 +81,10 @@ public class EventsParser {
             if (datas != null) {
                 String startid = datas.get(0).get_id();
                 News start = newsDataBase.getOneData(startid);
-                boolean Already = (start == null)?false : true;
+                boolean Already = (start != null);
                 int size = datas.size();
+                int count = 0;
+                ArrayList<News> ManyNews = new ArrayList<>();
                 for (int i = size - 1; i >=0; i--) {
                     Data data = datas.get(i);
                     News news = newsDataBase.getOneData(data.get_id());
@@ -91,13 +93,24 @@ public class EventsParser {
                         news.setId(data.get_id());
                         news.setType(data.getType());
                         news.setTitle(data.getTitle());
-                        news.setTime(data.getTime());
-                        news.setLanguage(data.getLang());
-                        //news.setInfluence(Double.parseDouble(data.getInfluence()));
-                        newsDataBase.saveOneData(news);
-                    }else if(Already == true){                                          //否则如果存在并且第一条不为空，结束
+                        String time = data.getTime();
+                        time = TimeChecker.CheckString(time);
+                        news.setTime(time);
+                        count ++;
+                        ManyNews.add(news);
+                    }else if(Already){                                          //否则如果存在并且第一条不为空，结束
                         break ;
                     }
+                    if(count == 1000){
+                        newsDataBase.saveData(ManyNews);
+                        ManyNews = new ArrayList<>();
+                        count = 0;
+                    }
+                }
+                if(ManyNews.size() != 0){
+                    newsDataBase.saveData(ManyNews);
+                    ManyNews.clear();
+                    count = 0;
                 }
             }
         }

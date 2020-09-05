@@ -159,36 +159,36 @@ public class NewsDataBase {
     }
 
     //条件查询——类别
-    public ArrayList<News> GetTypes(String[] types){
+    public ArrayList<News> GetTypes(String[] types, int limit, int offset){
         ArrayList<News> news = new ArrayList<>();
         if(types == null){
-            return getAll();
+            return (ArrayList<News>) newsDao.queryBuilder().limit(limit).offset(offset).orderAsc(NewsDao.Properties.Time).list();
         }
         int count = types.length;
         switch(count) {
             case 1:
                 news = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Type.eq(types[0]))
-                        .orderAsc(NewsDao.Properties.Time).list();
+                        .orderAsc(NewsDao.Properties.Time).limit(limit).offset(offset).list();
                 break;
             default:
-                news = getAll();
+                news = (ArrayList<News>) newsDao.queryBuilder().limit(limit).offset(offset).orderAsc(NewsDao.Properties.Time).list();
                 break;
         }
         return news;
     }
 
     //查询类别
-    public ArrayList<News> GetTypes(ArrayList<String> types){
+    public ArrayList<News> GetTypes(ArrayList<String> types, int limit, int offset){
         ArrayList<News> news = new ArrayList<>();
         if(types == null)
-            return getAll();
+            return (ArrayList<News>) newsDao.queryBuilder().limit(limit).offset(offset).orderAsc(NewsDao.Properties.Time).list();
         switch(types.size()) {
             case 1:
                 news = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Type.eq(types.get(0)))
-                    .orderAsc(NewsDao.Properties.Time).list();
+                    .orderAsc(NewsDao.Properties.Time).limit(limit).offset(offset).list();
                 break;
             default:
-                news = getAll();
+                news = (ArrayList<News>) newsDao.queryBuilder().limit(limit).offset(offset).orderAsc(NewsDao.Properties.Time).list();
                 break;
         }
         return news;
