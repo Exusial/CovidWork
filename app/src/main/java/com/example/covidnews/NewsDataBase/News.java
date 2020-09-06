@@ -14,32 +14,18 @@ public class News {
     private String type;                    //类别，新闻或者paper
     private String title;                   //新闻标题
     private String time;                    //代表时间
-    private String language;                //语种
-    private double influence;               //影响力
-    private String imgUrl;                  //图片的url
+    private String source;                  //代表来源
+    private String language;                //代表语言
 
-    //具体的新闻信息
-    private String content;                 //正文
-    /*
-        此条较长
-        格式为
-        来源, 时间 -- 正文
-        其中正文每一个自然段用','隔开
-        即： 自然段1,自然段2,自然段3
-    */
-    private String entities;              //关键词集合
-    @Generated(hash = 2039345805)
-    public News(String id, String type, String title, String time, String language,
-            double influence, String imgUrl, String content, String entities) {
+    @Generated(hash = 1763158429)
+    public News(String id, String type, String title, String time, String source,
+            String language) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.time = time;
+        this.source = source;
         this.language = language;
-        this.influence = influence;
-        this.imgUrl = imgUrl;
-        this.content = content;
-        this.entities = entities;
     }
     @Generated(hash = 1579685679)
     public News() {
@@ -123,60 +109,10 @@ public class News {
         this.language = language;
     }
 
-    //关于影响力
-    public double getInfluence() {
-        return this.influence;
+    public String getSource() {
+        return this.source;
     }
-
-    public void setInfluence(double influence) {
-        this.influence = influence;
-    }
-
-    //关于正文内容
-    public String getContent() {
-        return this.content;
-    }
-
-    public ArrayList<String> getContentList(){
-        return StringToList(this.content);
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setContent(String[] content){
-        this.content = ListToString(content);
-    }
-
-    public void setContent(ArrayList<String> content){
-        this.content = ListToString(content);
-    }
-
-    //关于关键词
-    public String getEntities() {
-        return this.entities;
-    }
-
-    public ArrayList<String> getEntitiesList(){
-        return StringToList(this.entities);
-    }
-
-    public void setEntities(String entities) {
-        this.entities = entities;
-    }
-
-    public void setEntities(String[] entities){
-        this.entities = ListToString(entities);
-    }
-
-    public void setEntities(ArrayList<String> entities){
-        this.entities = ListToString(entities);
-    }
-    public String getImgUrl() {
-        return this.imgUrl;
-    }
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setSource(String source) {
+        this.source = source;
     }
 }
