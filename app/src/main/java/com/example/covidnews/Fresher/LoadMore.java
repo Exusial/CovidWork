@@ -52,6 +52,8 @@ public class LoadMore implements Runnable{
             for(int i = 0; i <= s-1; i ++){
                 News news = newsArrayList.get(i);
                 final NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
+                ni.setKind(news.getType());
+                ni.setDescription(news.getSource());
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {

@@ -47,22 +47,4 @@ public class NewsParser {
         if(mPool == null)
             mPool = Executors.newFixedThreadPool(3);
     }
-
-    //无用
-    public void displayInfo(NewsAdapter adapter, NewsItem ni, String id){
-        NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
-        News news = newsDataBase.getOneData(id);
-        if(news != null){
-            news = newsDataBase.getOneData(id);
-            ni.setTitle(news.getTitle());
-            ni.setTime(news.getTime());
-            ni.setDescription(null);
-            adapter.addData(ni);
-            adapter.notifyDataSetChanged();
-        }else{
-            //如果第一次运行，啥也没有，需要链接获取
-            EventsParser eventsParser = EventsParser.getInstance();
-            return ;
-        }
-    }
 }

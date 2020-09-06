@@ -21,6 +21,7 @@ import com.example.covidnews.Fresher.LoadNew;
 import com.example.covidnews.MainActivity;
 import com.example.covidnews.NewsDataBase.NewsInit;
 import com.example.covidnews.R;
+import com.example.covidnews.newsviews.NewsDetailActivity;
 import com.example.covidnews.newsviews.NewsItemActivity;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
@@ -77,12 +78,12 @@ public class NewsFragment extends Fragment {
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 NewsItem item = (NewsItem) adapter.getData().get(position);
-                String to_send = item.getTitle();
+                String to_send = item.getId();
                 TextView textView = view.findViewById(R.id.ntitle1);
                 textView.setTextColor(Color.parseColor("#708090"));
-                Intent intent = new Intent(getActivity(), NewsItemActivity.class);
+                Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("title",to_send);
+                bundle.putString("id",to_send);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -95,7 +96,7 @@ public class NewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_news, container, false);
-        NewsInit init = new NewsInit(adapter);
+        NewsInit init = new NewsInit(adapter,kind);
         init.InitPage();
         RecyclerView myview = view.findViewById(R.id.newsview);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -108,7 +109,7 @@ public class NewsFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                Thread ts = new Thread(new LoadNew(adapter, newewst,NewsFragment.this));
+                Thread ts = new Thread(new LoadNew(adapter,NewsFragment.this,kind));
                 refreshlayout.finishRefresh(!ts.isAlive());//传入false表示刷新失败
                 refreshlayout.setDisableContentWhenRefresh(true);
                 ts.start();
@@ -119,7 +120,7 @@ public class NewsFragment extends Fragment {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-                Thread ts = new Thread(new LoadMore(adapter,NewsFragment.this));
+                Thread ts = new Thread(new LoadMore(adapter,NewsFragment.this,kind));
                 refreshlayout.finishLoadMore(!ts.isAlive());//传入false表示刷新失败
                 refreshlayout.setDisableContentWhenLoading(true);
                 ts.start();

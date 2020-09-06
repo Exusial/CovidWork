@@ -21,8 +21,10 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.covidnews.NewsDataBase.NewsInit;
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout layout = findViewById(R.id.tab_layout);
         ViewPager pager = findViewById(R.id.viewPager);
         fadatper = new Fadatper(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        pager.setOffscreenPageLimit(2);
         pager.setAdapter(fadatper);
         layout.setupWithViewPager(pager);
     }
@@ -167,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         return mainActivity;
     }
 
-    public class Fadatper extends FragmentPagerAdapter{
+    public class Fadatper extends FragmentStatePagerAdapter {
 
         public Fadatper(@NonNull FragmentManager fm, int behavior) {
             super(fm, behavior);
@@ -176,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
+            System.out.println(fragments.get(position).getTag());
             return fragments.get(position);
         }
 
@@ -188,7 +192,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             System.out.println(titles);
+            System.out.println(max_item);
             return titles.get(position);
+        }
+
+        public int getItemPosition(Object object){
+            return PagerAdapter.POSITION_NONE;
         }
     }
 }

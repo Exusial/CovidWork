@@ -26,5 +26,6 @@ public class NewsAdapter extends BaseQuickAdapter<NewsItem, BaseViewHolder> {
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, NewsItem newsItem) {
         baseViewHolder.setText(R.id.ntitle1,newsItem.getTitle()).setText(R.id.ntitle2,newsItem.getTime());
+        baseViewHolder.setText(R.id.kind,newsItem.getKind()).setText(R.id.res,newsItem.getDescription());
     }
 }

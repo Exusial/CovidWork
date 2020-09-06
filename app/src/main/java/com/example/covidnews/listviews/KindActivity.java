@@ -113,6 +113,7 @@ public class KindActivity extends AppCompatActivity {
                 k_btn4.setVisibility(View.GONE);
                 MainActivity.max_item += 1;
                 MainActivity.all[0] = 0;
+                System.out.println("save "+MainActivity.save_fragments.get(0).getTag());
                 MainActivity.fragments.add(MainActivity.save_fragments.get(0));
                 MainActivity.titles.add("ALL");
                 MainActivity.map.put("ALL",MainActivity.fragments.size()-1);
@@ -126,6 +127,7 @@ public class KindActivity extends AppCompatActivity {
                 k_btn5.setVisibility(View.GONE);
                 MainActivity.max_item += 1;
                 MainActivity.all[1] = 0;
+                System.out.println("save "+MainActivity.save_fragments.get(1).getTag());
                 MainActivity.fragments.add(MainActivity.save_fragments.get(1));
                 MainActivity.titles.add("NEWS");
                 MainActivity.map.put("NEWS",MainActivity.fragments.size()-1);
@@ -137,6 +139,7 @@ public class KindActivity extends AppCompatActivity {
             public void onClick(View view) {
                 k_btn3.setVisibility(View.VISIBLE);
                 k_btn6.setVisibility(View.GONE);
+                System.out.println("save "+MainActivity.save_fragments.get(2).getTag());
                 MainActivity.max_item += 1;
                 MainActivity.all[2] = 0;
                 MainActivity.fragments.add(MainActivity.save_fragments.get(2));

@@ -1,19 +1,31 @@
 package com.example.covidnews.globalviews;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.covidnews.MainActivity;
 import com.example.covidnews.R;
+import com.example.covidnews.newsviews.NewsItemActivity;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,6 +45,7 @@ import java.util.Map;
 public class GlobalActivity extends AppCompatActivity {
 
     public static HashMap<String,ArrayList<Integer>> kv;
+    public static HashMap<String,ArrayList<Integer>> map;
     private static Handler handler;
     public static ArrayList<ListItem> data;
     public static RecyclerView myview;
@@ -99,7 +112,7 @@ public class GlobalActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            HashMap<String,ArrayList<Integer>> map = new HashMap<String,ArrayList<Integer>>();
+            map = new HashMap<String,ArrayList<Integer>>();
             for(Map.Entry<String,ArrayList<Integer>> entry:kv.entrySet()){
                 String[] countris = entry.getKey().split("\\|");
                 if(countris.length>1)
@@ -141,6 +154,42 @@ public class GlobalActivity extends AppCompatActivity {
                 myview.setAdapter(adapter);
             }
         }
+    }
+
+    @SuppressLint("RestrictedApi")
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.main_menu,menu);
+        final MenuItem searchItem = menu.findItem(R.id.menu_search);
+        SearchView view = (SearchView) searchItem.getActionView();
+        view.setQueryHint("搜索国家");
+        view.setSubmitButtonEnabled(true);
+        view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(map.get(query)!=null){
+                    ArrayList<Integer> target = map.get(query);
+                    AlertDialog dialog = new AlertDialog.Builder(GlobalActivity.this).setTitle(query).setMessage(
+                            "感染人数"+target.get(0)+"\n"+"死亡人数"+target.get(1)+"\n"+"痊愈人数"+target.get(2)
+                    ).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    }).create();
+                    dialog.setCancelable(true);
+                    dialog.show();
+                }
+                else
+                    Toast.makeText(getApplicationContext(),"没有找到对应国家，请输入国家英文名重试？",Toast.LENGTH_LONG);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
 }

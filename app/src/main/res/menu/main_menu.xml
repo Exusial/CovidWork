@@ -9,12 +9,4 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"
         />
-    <AutoCompleteTextView
-        android:id="@+id/actv_text"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="请输入服务器地址"
-        android:layout_margin="5dp"
-        android:singleLine="true"
-        android:imeOptions="actionNext"/>
 </menu>
