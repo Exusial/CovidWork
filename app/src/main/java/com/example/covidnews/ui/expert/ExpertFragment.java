@@ -135,7 +135,7 @@ public class ExpertFragment extends Fragment {
                 }
                 if(profile.get("position")!=null)
                     temp.professions = profile.get("position").toString();
-                if(profile.get("work")!=null)
+                if(profile.get("work")!=null&&profile.get("work").toString().length()!=0)
                     temp.experience = profile.get("work").toString().split("\n");
                 if(profile.get("homepage")!=null)
                     temp.homepage = profile.get("homepage").toString();

@@ -9,5 +9,5 @@
         andriod:id="@+id/col1"
         andriod:layout_width="match_parent"
         andriod:layout_height="wrap_content"
-        andriod:layout_marginLeft="40dp"/>
+        andriod:layout_marginLeft="60dp"/>
 </LinearLayout>

@@ -69,7 +69,8 @@ public class ExpertDetailActivity extends AppCompatActivity {
                 }
             }
             else if(i==1){
-                if(now.experience!=null){
+                if(now.experience!=null&&!now.experience.equals("")){
+                    System.out.println(now.experience.toString());
                     List<BaseNode> worklist = new ArrayList<>();
                     for(String place:now.experience){
                         ExpDesNode work = new ExpDesNode(place);
@@ -81,7 +82,7 @@ public class ExpertDetailActivity extends AppCompatActivity {
             else if(i==3){
                 if(now.edu!=null){
                     List<BaseNode> Edulist = new ArrayList<>();
-                    ExpDesNode work = new ExpDesNode(now.edu);
+                    ExpDesNode work = new ExpDesNode(now.edu.replaceAll("<br>",""));
                     Edulist.add(work);
                     temp = new ExpRootNode("Education Experience",Edulist);
                 }

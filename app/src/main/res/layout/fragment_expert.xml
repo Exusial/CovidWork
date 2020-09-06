@@ -17,7 +17,7 @@
             andriod:textSize="40sp"
             andriod:layout_marginLeft="5dp"
             andriod:layout_gravity="center"
-            andriod:visibility="invisible"
+            andriod:visibility="visible"
             />
         <androidx.recyclerview.widget.RecyclerView
             andriod:id="@+id/rview"

@@ -66,14 +66,4 @@
                 andriod:id="@+id/k_btn6"/>
         </LinearLayout>
     </LinearLayout>
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        andriod:id="@+id/menu_nav"
-        andriod:layout_width="match_parent"
-        andriod:layout_height="match_parent"
-        andriod:background="#ffffff"
-        app:menu="@menu/navigation_menu"
-        app:itemIconSize="33dp"
-        app:labelVisibilityMode="labeled"
-        andriod:layout_weight="11"
-        />
 </LinearLayout>
