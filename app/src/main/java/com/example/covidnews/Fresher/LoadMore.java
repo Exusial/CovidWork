@@ -33,26 +33,32 @@ public class LoadMore implements Runnable{
     @Override
     public void run() {
         NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
-        int size = (int)newsDataBase.getCount();
-        Log.d("KIND:", kind);
-        int limit = 100;
-        Random random = new Random();
         EventsParser eventsParser = new EventsParser();
-        Log.d("GO TO PARSE", "");
-        ArrayList<News> newsArrayList = eventsParser.ParseNewEvents(1, limit, kind);
-        for(int i = 0; i <= 5; i ++){
-            int posi = random.nextInt(100);
-            News news = newsArrayList.get(posi);
-            Log.d("",news.getTitle());
-            Log.d("",news.getId());
-            final NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    fragment.freshNews(adapter, ni, -1);
-                }
-            });
-        }
+        //先看一下已经加入了多少了
+        int size = newsDataBase.getCount(kind);
+        int page = size/10 + 1;
 
+        Log.d("KIND:", kind);
+        Log.d("SIZE:", size + "");
+        Log.d("PAGE:", page + "");
+
+        //获取新的东西
+        ArrayList<News> newsArrayList = eventsParser.justGet(page, 20, kind);
+        Log.d("FINAL:", newsArrayList.size() + "");
+        if(newsArrayList.size() == 0){
+            ;
+        }else{
+            int s = newsArrayList.size();
+            for(int i = 0; i <= s-1; i ++){
+                News news = newsArrayList.get(i);
+                final NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        fragment.freshNews(adapter, ni, -1);
+                    }
+                });
+            }
+        }
     }
 }
