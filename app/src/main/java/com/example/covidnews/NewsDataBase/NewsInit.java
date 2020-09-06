@@ -32,10 +32,12 @@ public class NewsInit {
 
             EventsParser eventsParser = new EventsParser();
 
-            Log.d("KIND", kind);
-            ArrayList<News> newsArrayList = eventsParser.ParseNewEvents(1, 10 , kind);
+            ArrayList<News> newsArrayList = newsDataBase.GetTypes(kind,10,0);
 
-            for(int i =0; i <= newsArrayList.size() - 1; i++){
+            if(newsArrayList.size() < 10){
+                newsArrayList = eventsParser.justGet(1,10, kind);
+            }
+            for(int i = 0; i <= newsArrayList.size() - 1; i ++){
                 News news = newsArrayList.get(i);
                 final NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
                 mHandler.post(new Runnable() {

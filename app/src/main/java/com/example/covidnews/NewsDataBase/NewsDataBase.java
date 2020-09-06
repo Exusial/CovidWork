@@ -158,6 +158,17 @@ public class NewsDataBase {
         return newsDao.count();
     }
 
+    public int getCount(String type){
+        switch (type) {
+            case "paper":
+            case "news":
+                ArrayList<News> newsArrayList = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Type.eq(type)).list();
+                return newsArrayList.size();
+            default:
+                return (int)getCount();
+        }
+    }
+
     //条件查询——类别
     public ArrayList<News> GetTypes(String[] types, int limit, int offset){
         ArrayList<News> news = new ArrayList<>();
@@ -197,8 +208,8 @@ public class NewsDataBase {
     public ArrayList<News> GetTypes(String types, int limit, int offset){
         ArrayList<News> news = new ArrayList<>();
         switch(types){
-            case "PAPER":
-            case "NEWS":
+            case "paper":
+            case "news":
                 news = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Type.eq(types)).limit(limit)
                         .offset(offset).orderDesc(NewsDao.Properties.Time).list();
                 break;

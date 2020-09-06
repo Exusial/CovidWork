@@ -33,7 +33,7 @@ public class LoadNew implements Runnable{
     public void run() {
         NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
         EventsParser eventsParser = new EventsParser();
-        ArrayList<News> newsArrayList = eventsParser.ParseNewEvents();
+        ArrayList<News> newsArrayList = eventsParser.getNews(kind);
         if(newsArrayList.size() == 0){
             ;
         }else{
