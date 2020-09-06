@@ -193,4 +193,20 @@ public class NewsDataBase {
         }
         return news;
     }
+
+    public ArrayList<News> GetTypes(String types, int limit, int offset){
+        ArrayList<News> news = new ArrayList<>();
+        switch(types){
+            case "PAPER":
+            case "NEWS":
+                news = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Type.eq(types)).limit(limit)
+                        .offset(offset).orderDesc(NewsDao.Properties.Time).list();
+                break;
+            default:
+                news = (ArrayList<News>) newsDao.queryBuilder().limit(limit).offset(offset).orderDesc(NewsDao.Properties.Time).list();
+                break;
+
+        }
+        return news;
+    }
 }
