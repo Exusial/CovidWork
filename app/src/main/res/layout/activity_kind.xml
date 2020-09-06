@@ -60,4 +60,5 @@
             andriod:text="paper"
             andriod:id="@+id/k_btn6"/>
     </LinearLayout>
+
 </LinearLayout>

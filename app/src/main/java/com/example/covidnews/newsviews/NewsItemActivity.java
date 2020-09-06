@@ -4,38 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.widget.LinearLayout;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.example.covidnews.R;
 import com.example.covidnews.listviews.NewsAdapter;
-import com.example.covidnews.listviews.NewsItem;
-import com.example.covidnews.virusviews.VirusDetailActivity;
 import com.example.covidnews.virusviews.VirusShowActivity;
-import org.jetbrains.annotations.NotNull;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 public class NewsItemActivity extends AppCompatActivity {
 
@@ -78,7 +58,7 @@ public class NewsItemActivity extends AppCompatActivity {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
-                VirusShowActivity activity = (VirusShowActivity) ref.get();
+                NewsItemActivity activity = (NewsItemActivity) ref.get();
                 if(activity!=null){
                     View view = getLayoutInflater().inflate(R.layout.nothing_layout,null);
                     adapter.setEmptyView(view);

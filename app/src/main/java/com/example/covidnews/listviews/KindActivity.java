@@ -135,9 +135,9 @@ public class KindActivity extends AppCompatActivity {
         k_btn6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    k_btn3.setVisibility(View.VISIBLE);
-                    k_btn6.setVisibility(View.GONE);
-                    MainActivity.max_item += 1;
+                k_btn3.setVisibility(View.VISIBLE);
+                k_btn6.setVisibility(View.GONE);
+                MainActivity.max_item += 1;
                 MainActivity.all[2] = 0;
                 MainActivity.fragments.add(MainActivity.save_fragments.get(2));
                 MainActivity.titles.add("PAPER");

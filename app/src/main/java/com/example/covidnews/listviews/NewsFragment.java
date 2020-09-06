@@ -1,7 +1,10 @@
 package com.example.covidnews.listviews;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,11 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.example.covidnews.Fresher.LoadMore;
 import com.example.covidnews.Fresher.LoadNew;
+import com.example.covidnews.MainActivity;
 import com.example.covidnews.NewsDataBase.NewsInit;
 import com.example.covidnews.R;
+import com.example.covidnews.newsviews.NewsItemActivity;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -29,14 +37,14 @@ public class NewsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static String kind;
+    private final static String ARG_PARAM1 = "param1";
+    private String kind;
     private RefreshLayout refreshLayout;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private static NewsAdapter adapter;
-    private static int newewst = 10;
+    private  NewsAdapter adapter;
+    private  int newewst = 10;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -57,7 +65,6 @@ public class NewsFragment extends Fragment {
         return fragment;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,10 +72,29 @@ public class NewsFragment extends Fragment {
             kind = getArguments().getString(ARG_PARAM1);
         }
         adapter = new NewsAdapter(R.layout.news_item_layout,null);
+        adapter.addChildClickViewIds(R.id.main_lay);
+        adapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                NewsItem item = (NewsItem) adapter.getData().get(position);
+                String to_send = item.getTitle();
+                TextView textView = view.findViewById(R.id.ntitle1);
+                textView.setTextColor(Color.parseColor("#708090"));
+                Intent intent = new Intent(getActivity(), NewsItemActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("title",to_send);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
     }
 
-    public void onViewCreated(View view,Bundle bundle){
-        super.onViewCreated(view,bundle);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_news, container, false);
         NewsInit init = new NewsInit(adapter);
         init.InitPage();
         RecyclerView myview = view.findViewById(R.id.newsview);
@@ -87,6 +113,7 @@ public class NewsFragment extends Fragment {
                 refreshlayout.setDisableContentWhenRefresh(true);
                 ts.start();
                 newewst +=5;
+                System.out.println("Doing");
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -98,12 +125,7 @@ public class NewsFragment extends Fragment {
                 ts.start();
             }
         });
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_news, container, false);
+        return view;
     }
 
     public void freshNews(NewsAdapter adapter, NewsItem ni, int position){

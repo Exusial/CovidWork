@@ -3,6 +3,7 @@ public class NewsItem{
     private String title;
     private String time;
     private String description;
+    private String kind;
 
     public NewsItem(String title,String time,String description){
         this.title = title;
@@ -32,5 +33,13 @@ public class NewsItem{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
     }
 }

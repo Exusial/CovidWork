@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<NewsFragment> fragments;
     public static ArrayList<String> titles;
     public static HashMap<String,Integer> map;
-    private RefreshLayout refreshLayout;
     private static MainActivity mainActivity;
     public static Integer all[] = {0,0,0};
     public static Fadatper fadatper;
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         });
         TabLayout layout = findViewById(R.id.tab_layout);
         ViewPager pager = findViewById(R.id.viewPager);
-        fadatper = new Fadatper(getSupportFragmentManager(),FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        fadatper = new Fadatper(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         pager.setAdapter(fadatper);
         layout.setupWithViewPager(pager);
     }
