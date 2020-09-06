@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import com.example.covidnews.listviews.NewsAdapter;
+import com.example.covidnews.listviews.NewsItem;
 import com.example.covidnews.newsviews.NewsItemActivity;
 import com.example.covidnews.ui.dashboard.DashboardFragment;
 import com.example.covidnews.ui.expert.ExpertFragment;
@@ -147,5 +149,15 @@ public class MainActivity extends AppCompatActivity {
         transaction.show(fragments[index]).commitAllowingStateLoss();
 
 
+    }
+
+    public void freshNews(NewsAdapter adapter, NewsItem ni, int position){
+        if(position == -1) {
+            adapter.addData(ni);
+        }
+        else{
+            adapter.addData(position, ni);
+        }
+        adapter.notifyDataSetChanged();
     }
 }

@@ -11,9 +11,20 @@ import android.os.Message;
 import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.example.covidnews.Fresher.LoadMore;
+import com.example.covidnews.Fresher.LoadNew;
+import com.example.covidnews.MainActivity;
 import com.example.covidnews.R;
 import com.example.covidnews.listviews.NewsAdapter;
+import com.example.covidnews.listviews.NewsFragment;
+import com.example.covidnews.listviews.NewsItem;
 import com.example.covidnews.virusviews.VirusShowActivity;
+import com.scwang.smart.refresh.footer.ClassicsFooter;
+import com.scwang.smart.refresh.header.ClassicsHeader;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
+
 import java.lang.ref.WeakReference;
 
 
@@ -22,6 +33,7 @@ public class NewsItemActivity extends AppCompatActivity {
     RecyclerView myview;
     NewsAdapter adapter;
     SafeHandler handler;
+    static int newewst = 10;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +44,29 @@ public class NewsItemActivity extends AppCompatActivity {
         myview.setLayoutManager(manager);
         adapter = new NewsAdapter(R.layout.news_item_layout,null);
         handler = new SafeHandler(this);
+        RefreshLayout refreshLayout = findViewById(R.id.refreshLayout);
+        refreshLayout.setRefreshHeader(new ClassicsHeader(this));
+        refreshLayout.setRefreshFooter(new ClassicsFooter(this));
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                Thread ts = new Thread(new LoadNew(adapter,NewsItemActivity.this));
+                refreshlayout.finishRefresh(!ts.isAlive());//传入false表示刷新失败
+                refreshlayout.setDisableContentWhenRefresh(true);
+                ts.start();
+                newewst +=5;
+                System.out.println("Doing");
+            }
+        });
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                Thread ts = new Thread(new LoadMore(adapter,NewsItemActivity.this));
+                refreshlayout.finishLoadMore(!ts.isAlive());//传入false表示刷新失败
+                refreshlayout.setDisableContentWhenLoading(true);
+                ts.start();
+            }
+        });
         Thread thread = new Thread(){
             public void run(){
                 handler.sendMessage(get_data());
@@ -85,6 +120,17 @@ public class NewsItemActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+
+    public void freshNews(NewsAdapter adapter, NewsItem ni, int position){
+        if(position == -1) {
+            adapter.addData(ni);
+        }
+        else{
+            adapter.addData(position, ni);
+        }
+        adapter.notifyDataSetChanged();
     }
 }
 

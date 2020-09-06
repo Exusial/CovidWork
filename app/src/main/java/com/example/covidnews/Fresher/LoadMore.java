@@ -12,6 +12,7 @@ import com.example.covidnews.NewsDataBase.NewsDataBase;
 import com.example.covidnews.listviews.NewsAdapter;
 import com.example.covidnews.listviews.NewsFragment;
 import com.example.covidnews.listviews.NewsItem;
+import com.example.covidnews.newsviews.NewsItemActivity;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
 import java.util.ArrayList;
@@ -23,11 +24,22 @@ public class LoadMore implements Runnable{
     private RefreshLayout refreshLayout;
     private NewsFragment fragment;
     private String kind;
+    private NewsItemActivity mContext;
+    private int workkind;
+
     public LoadMore(NewsAdapter adapter, NewsFragment fragment, String kind){
         this.adapter = adapter;
         mHandler = new Handler();
         this.fragment = fragment;
         this.kind = kind.toLowerCase();
+        workkind = 0;
+    }
+
+    public LoadMore(NewsAdapter adapter, NewsItemActivity context){
+        this.adapter = adapter;
+        mHandler = new Handler();
+        this.mContext = context;
+        workkind = 1;
     }
 
     @Override
@@ -54,12 +66,13 @@ public class LoadMore implements Runnable{
                 final NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
                 ni.setKind(news.getType());
                 ni.setDescription(news.getSource());
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        fragment.freshNews(adapter, ni, -1);
-                    }
-                });
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            fragment.freshNews(adapter, ni, -1);
+                        }
+                    });
+
             }
         }
     }

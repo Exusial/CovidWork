@@ -4,9 +4,18 @@
     andriod:layout_width="match_parent"
     andriod:layout_height="match_parent"
     >
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        andriod:id="@+id/refreshLayout"
+        andriod:layout_width="match_parent"
+        andriod:layout_height="match_parent"
+        >
     <androidx.recyclerview.widget.RecyclerView
         andriod:id="@+id/rview"
         andriod:layout_width="match_parent"
         andriod:layout_height="wrap_content">
     </androidx.recyclerview.widget.RecyclerView>
+        <com.scwang.smart.refresh.footer.ClassicsFooter
+            andriod:layout_width="match_parent"
+            andriod:layout_height="wrap_content"/>
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 </LinearLayout>
