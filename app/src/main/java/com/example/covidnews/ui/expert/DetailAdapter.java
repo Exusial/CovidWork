@@ -26,6 +26,7 @@ public class DetailAdapter extends BaseNodeAdapter {
         addFullSpanNodeProvider(new ExpRootNodeProvider());
         addNodeProvider(new ExpDesNodeProvider());
         addNodeProvider(new FrontProvider());
+        addNodeProvider(new EmailNodeProvider());
     }
 
     @Override
@@ -39,6 +40,9 @@ public class DetailAdapter extends BaseNodeAdapter {
         }
         else if (node instanceof FrontNode) {
             return 2;
+        }
+        else if(node instanceof EmailNode){
+            return 3;
         }
         return -1;
     }
@@ -91,6 +95,24 @@ class FrontNode extends BaseNode{
     }
 
     public Map<String,Float> getTitle() {
+        return Title;
+    }
+
+    @Nullable
+    @Override
+    public List<BaseNode> getChildNode() {
+        return null;
+    }
+}
+
+class EmailNode extends BaseNode{
+    private String Title;
+
+    public EmailNode(String Title){
+        this.Title = Title;
+    }
+
+    public String getTitle() {
         return Title;
     }
 
@@ -165,7 +187,6 @@ class FrontProvider extends BaseNodeProvider {
     public void convert(@NotNull BaseViewHolder helper, @NotNull BaseNode data) {
         FrontNode entity = (FrontNode) data;
         ColumnChartView colview = (ColumnChartView) helper.getView(R.id.col1);
-        int subcol = 1;
         List<Column> cols = new ArrayList<Column>();
         List<SubcolumnValue> subcols;
         ArrayList<String> names = new ArrayList<String>();
@@ -191,10 +212,34 @@ class FrontProvider extends BaseNodeProvider {
         datasets.setAxisXBottom(X);
         datasets.setAxisYLeft(Y);
         colview.setColumnChartData(datasets);
-        Viewport viewport = new Viewport(1,colview.getMaximumViewport().height()*1.25f,names.size()>4?4:names.size(),0);
+        Viewport viewport = new Viewport(0,colview.getMaximumViewport().height()*1.25f,names.size()>4?4:names.size(),0);
         colview.setCurrentViewport(viewport);
-        colview.moveTo(1,0);
+        colview.moveTo(0,0);
 
+    }
+
+    @Override
+    public void onClick(@NotNull BaseViewHolder helper, @NotNull View view, BaseNode data, int position) {
+        getAdapter().expandOrCollapse(position);
+    }
+}
+
+class EmailNodeProvider extends BaseNodeProvider {
+
+    @Override
+    public int getItemViewType() {
+        return 3;
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.des_layout;
+    }
+
+    @Override
+    public void convert(@NotNull BaseViewHolder helper, @NotNull BaseNode data) {
+        EmailNode entity = (EmailNode) data;
+        helper.setText(R.id.des_text, entity.getTitle());
     }
 
     @Override

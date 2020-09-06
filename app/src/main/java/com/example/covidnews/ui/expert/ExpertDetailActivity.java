@@ -15,6 +15,7 @@ import com.example.covidnews.NetParser.ImageLoader;
 import com.example.covidnews.R;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ExpertDetailActivity extends AppCompatActivity {
 
@@ -56,7 +57,7 @@ public class ExpertDetailActivity extends AppCompatActivity {
         }
         adapter = new DetailAdapter();
         ArrayList<ExpRootNode> list = new ArrayList<>();
-        for(int i=0;i<4;i++){
+        for(int i=0;i<5;i++){
             ExpRootNode temp = null;
             if(i==0){
                 if(now.description!=null){
@@ -90,9 +91,20 @@ public class ExpertDetailActivity extends AppCompatActivity {
             else if(i==2){
                 if(now.tags!=null){
                     List<BaseNode> frontlist = new ArrayList<>();
+                    for(Map.Entry<String,Float> entry:now.tags.entrySet())
+                        System.out.println(entry.getKey()+" "+entry.getValue());
                     FrontNode ff = new FrontNode(now.tags);
                     frontlist.add(ff);
                     temp = new ExpRootNode("Research Fronts",frontlist);
+                }
+            }
+            else if(i==4){
+                if(now.emails!=null&&now.emails.size()!=0){
+                    List<BaseNode> emaillist = new ArrayList<>();
+                    for(String email:now.emails){
+                        emaillist.add(new EmailNode(email));
+                    }
+                    temp = new ExpRootNode("Contact Emails",emaillist);
                 }
             }
             if(temp!=null)
