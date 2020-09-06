@@ -1,25 +1,25 @@
-package com.example.covidnews.expertview;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.example.covidnews.ui.expert;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.example.covidnews.MainActivity;
 import com.example.covidnews.R;
-import com.example.covidnews.virusviews.VirusShowActivity;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,80 +33,65 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-class Expert_row implements Serializable{
-    public String name;
-    public String professions;
-    public Map<String,Object> params;
-    public String inst;
-    public boolean ispassed;
-    public String avatar;
-    public String position;
-    Expert_row(String name,String professions,Map<String,Object> params,String inst){
-        this.name = name;
-        this.params = params;
-        this.professions = professions;
-        this.inst = inst;
-        avatar = null;
-        ispassed = false;
-        params = new HashMap<>();
-    }
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link ExpertFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ExpertFragment extends Fragment {
 
-    Expert_row(){
-        params = new HashMap<>();
-    }
-}
-
-class Expert_detail extends Expert_row implements Serializable {
-    public String description;
-    public ArrayList<String> emails;
-    public String homepage;
-    public String[] experience;
-    public String edu;
-    TreeMap<String,Float> tags;
-    Expert_detail(String name,String professions,Map<String,Object> params,String inst){
-        super(name,professions,params,inst);
-        emails = new ArrayList<>();
-        tags = new TreeMap<>();
-    }
-
-    Expert_detail(){
-        super();
-        emails = new ArrayList<>();
-        tags = new TreeMap<>();
-    };
-
-    public String toString(){
-        return name+" "+position+" "+inst;
-    }
-}
-
-public class ExpertActivity extends AppCompatActivity {
-
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     static RecyclerView myview;
     static RowAdapter adapter;
     static ArrayList<Expert_detail> experts;
     static SafeHandler safeHandler;
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public ExpertFragment() {
+        // Required empty public constructor
+    }
+
+    // TODO: Rename and change types and number of parameters
+    public static ExpertFragment newInstance() {
+        ExpertFragment fragment = new ExpertFragment();
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_expert);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
+        safeHandler = new SafeHandler(getContext());
+        if(experts==null) {
+            experts = new ArrayList<>();
+            Thread thread = new Thread() {
+                public void run() {
+                    safeHandler.sendMessage(get_data());
+                }
+            };
+            thread.start();
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View root = inflater.inflate(R.layout.fragment_expert, container, false);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
-        experts = new ArrayList<>();
-        adapter = new RowAdapter(R.layout.row_expert_layout,null);
+        adapter = new RowAdapter(R.layout.row_expert_layout, null);
+        adapter.setList(experts);
         adapter.notifyDataSetChanged();
-        myview = (RecyclerView)findViewById(R.id.rview);
+        myview = root.findViewById(R.id.rview);
         myview.setLayoutManager(manager);
         myview.setAdapter(adapter);
         View view = getLayoutInflater().inflate(R.layout.loading_layout,null);
         adapter.setEmptyView(view);
-        safeHandler = new SafeHandler(this);
-        Thread thread = new Thread(){
-            public void run(){
-                safeHandler.sendMessage(get_data());
-            }
-        };
-        thread.start();
+        return root;
     }
 
     public Message get_data()  {
@@ -144,7 +129,7 @@ public class ExpertActivity extends AppCompatActivity {
                 JSONArray eml = (JSONArray) profile.get("emails_u");
                 if(eml!=null){
                     for(int j=0;j<eml.size();j++){
-                        parse_email t = JSON.toJavaObject((JSONObject) eml.get(j),parse_email.class);
+                        parse_email t = JSON.toJavaObject((JSONObject) eml.get(j), parse_email.class);
                         temp.emails.add(t.getAddress());
                     }
                 }
@@ -189,7 +174,7 @@ public class ExpertActivity extends AppCompatActivity {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
-                VirusShowActivity activity = (VirusShowActivity) ref.get();
+                MainActivity activity = (MainActivity) ref.get();
                 if(activity!=null){
                     View view = getLayoutInflater().inflate(R.layout.nothing_layout,null);
                     adapter.setEmptyView(view);
@@ -199,16 +184,12 @@ public class ExpertActivity extends AppCompatActivity {
                 //System.out.println("Failed!");
             } else {
                 //System.out.println("Success!");
-                final ExpertActivity activity = (ExpertActivity)ref.get();
+                final MainActivity activity = (MainActivity)ref.get();
                 if(activity!=null) {
                     //activity.findViewById(R.id.layout_emp).setVisibility(View.GONE);
                     adapter.setList(experts);
                     adapter.notifyDataSetChanged();
                     adapter.addChildClickViewIds(R.id.ntitle1);
-                    Typeface tf = Typeface.createFromAsset(getAssets(),"fangkai.TTF");
-                    TextView textView = activity.findViewById(R.id.Title);
-                    textView.setTypeface(tf);
-                    textView.setVisibility(View.VISIBLE);
                     adapter.setOnItemChildClickListener(new OnItemChildClickListener() {
                         @Override
                         public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
@@ -216,7 +197,7 @@ public class ExpertActivity extends AppCompatActivity {
                             Expert_detail to_send = (Expert_detail) adapter.getData().get(position);
                             bundle.putSerializable("item",to_send);
                             System.out.println(to_send);
-                            Intent intent = new Intent(activity, ExpertDetailActivity.class);
+                            Intent intent = new Intent(getActivity(), ExpertDetailActivity.class);
                             intent.putExtras(bundle);
                             startActivity(intent);
                         }
@@ -228,32 +209,49 @@ public class ExpertActivity extends AppCompatActivity {
     }
 }
 
-class parse_email{
-    private String address;
-    private String src;
-    private Double weight;
-
-    public Double getWeight() {
-        return weight;
+class Expert_row implements Serializable {
+    public String name;
+    public String professions;
+    public Map<String,Object> params;
+    public String inst;
+    public boolean ispassed;
+    public String avatar;
+    public String position;
+    Expert_row(String name,String professions,Map<String,Object> params,String inst){
+        this.name = name;
+        this.params = params;
+        this.professions = professions;
+        this.inst = inst;
+        avatar = null;
+        ispassed = false;
+        params = new HashMap<>();
     }
 
-    public String getAddress() {
-        return address;
+    Expert_row(){
+        params = new HashMap<>();
+    }
+}
+
+class Expert_detail extends Expert_row implements Serializable {
+    public String description;
+    public ArrayList<String> emails;
+    public String homepage;
+    public String[] experience;
+    public String edu;
+    TreeMap<String,Float> tags;
+    Expert_detail(String name,String professions,Map<String,Object> params,String inst){
+        super(name,professions,params,inst);
+        emails = new ArrayList<>();
+        tags = new TreeMap<>();
     }
 
-    public String getSrc() {
-        return src;
-    }
+    Expert_detail(){
+        super();
+        emails = new ArrayList<>();
+        tags = new TreeMap<>();
+    };
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setSrc(String src) {
-        this.src = src;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
+    public String toString(){
+        return name+" "+position+" "+inst;
     }
 }

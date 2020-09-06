@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:andriod="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     andriod:orientation="vertical"
     andriod:layout_width="match_parent"
-    andriod:layout_height="match_parent"
-    >
+    andriod:layout_height="match_parent">
+    <LinearLayout
+        andriod:layout_width="match_parent"
+        andriod:layout_height="match_parent"
+        andriod:layout_weight="1"
+        andriod:orientation="vertical">
     <TextView
         andriod:layout_width="match_parent"
         andriod:layout_height="30dp"
@@ -60,5 +65,15 @@
             andriod:text="paper"
             andriod:id="@+id/k_btn6"/>
     </LinearLayout>
-
+    </LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        andriod:id="@+id/menu_nav"
+        andriod:layout_width="match_parent"
+        andriod:layout_height="match_parent"
+        andriod:background="#ffffff"
+        app:menu="@menu/navigation_menu"
+        app:itemIconSize="33dp"
+        app:labelVisibilityMode="labeled"
+        andriod:layout_weight="11"
+        />
 </LinearLayout>

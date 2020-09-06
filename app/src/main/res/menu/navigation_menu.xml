@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="新闻列表"
+         />
+    <item
+        android:id="@+id/navigation_dashboard"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="新闻分类"
+        />
+    <item
+        android:id="@+id/navigation_notifications"
+        android:icon="@drawable/virus"
+        android:title="疫情数据"
+         />
+    <item
+        android:id="@+id/navigation_expert"
+        android:icon="@drawable/person"
+        android:title="知名学者"
+         />
+</menu>

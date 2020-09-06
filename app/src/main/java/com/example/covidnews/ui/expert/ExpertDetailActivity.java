@@ -1,13 +1,11 @@
-package com.example.covidnews.expertview;
+package com.example.covidnews.ui.expert;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,19 +13,8 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.example.covidnews.NetParser.ImageLoader;
 import com.example.covidnews.R;
-import com.scwang.smart.refresh.layout.api.RefreshLayout;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.*;
-
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.Column;
-import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.SubcolumnValue;
-import lecho.lib.hellocharts.model.Viewport;
-import lecho.lib.hellocharts.view.ColumnChartView;
 
 public class ExpertDetailActivity extends AppCompatActivity {
 
@@ -125,5 +112,35 @@ public class ExpertDetailActivity extends AppCompatActivity {
         temp.setText(now.params.get("citations").toString());
         temp = findViewById(R.id.P_number);
         temp.setText(now.params.get("pubs").toString());
+    }
+}
+
+class parse_email{
+    private String address;
+    private String src;
+    private Double weight;
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getSrc() {
+        return src;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setSrc(String src) {
+        this.src = src;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 }

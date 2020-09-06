@@ -47,7 +47,7 @@
             andriod:layout_height="20dp"
             andriod:text="Hello"
             andriod:textSize="12dp"
-            andriod:layout_marginTop="16dp"
+            andriod:layout_marginTop="20dp"
             andriod:layout_marginLeft="10dp"
             andriod:singleLine="true"
             />

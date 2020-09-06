@@ -25,6 +25,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.covidnews.MainActivity;
 import com.example.covidnews.R;
 import com.example.covidnews.newsviews.NewsItemActivity;
+import com.example.covidnews.provinceviews.ProvinceActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,13 +50,24 @@ public class GlobalActivity extends AppCompatActivity {
     private static Handler handler;
     public static ArrayList<ListItem> data;
     public static RecyclerView myview;
+    public static boolean hasfinished = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_global);
         myview = (RecyclerView)findViewById(R.id.gview);
-        kv = new HashMap<String,ArrayList<Integer>>();
-        data = new ArrayList<ListItem>();
+        if(kv == null) {
+            hasfinished = false;
+            kv = new HashMap<String, ArrayList<Integer>>();
+        }
+        if(map == null) {
+            hasfinished = false;
+            map = new HashMap<String, ArrayList<Integer>>();
+        }
+        if(data == null) {
+            hasfinished = false;
+            data = new ArrayList<ListItem>();
+        }
         handler = new SafeHandler(this);
         Thread thread = new Thread(){
             @Override
@@ -70,6 +82,24 @@ public class GlobalActivity extends AppCompatActivity {
     public Message get_data()  {
         Message msg = new Message();
         try {
+            if(kv==null||map==null||data==null)
+                hasfinished = false;
+            if(hasfinished)
+            {
+                msg.what = 1;
+                return msg;
+            }
+            if(ProvinceActivity.hasfinished){
+                kv = ProvinceActivity.kv;
+                if(kv!=null) {
+                    process_data();
+                    hasfinished = true;
+                    msg.what = 1;
+                    return msg;
+                }
+                else
+                    ProvinceActivity.hasfinished = false;
+            }
             URL url = new URL("https://covid-dashboard.aminer.cn/api/dist/epidemic.json");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -90,6 +120,8 @@ public class GlobalActivity extends AppCompatActivity {
                     kv.put(cc, ndata);
                 }
             }
+            process_data();
+            hasfinished = true;
             msg.what = 1;
         }
         catch (MalformedURLException e){
@@ -99,6 +131,39 @@ public class GlobalActivity extends AppCompatActivity {
             System.out.println("IO error!");
         }
             return msg;
+    }
+
+    private void process_data(){
+        for(Map.Entry<String,ArrayList<Integer>> entry:kv.entrySet()){
+            String[] countris = entry.getKey().split("\\|");
+            if(countris.length>1)
+                continue;
+            String country = countris[0];
+            ArrayList<Integer> nums = map.get(country);
+            if(nums == null){
+                nums = new ArrayList<Integer>();
+                nums.add(entry.getValue().get(0));
+                nums.add(entry.getValue().get(3));
+                nums.add(entry.getValue().get(2));
+            }
+            else{
+                nums.set(0,nums.get(0)+entry.getValue().get(0));
+                nums.set(1,nums.get(1)+entry.getValue().get(3));
+                nums.set(2,nums.get(2)+entry.getValue().get(2));
+            }
+            map.put(country,nums);
+        }
+        List<Map.Entry<String,ArrayList<Integer>>> so = new ArrayList<Map.Entry<String,ArrayList<Integer>>>(map.entrySet());
+        Collections.sort(so, new Comparator<Map.Entry<String, ArrayList<Integer>>>() {
+            @Override
+            public int compare(Map.Entry<String, ArrayList<Integer>> stringArrayListEntry, Map.Entry<String, ArrayList<Integer>> t1) {
+                return -stringArrayListEntry.getValue().get(0).compareTo(t1.getValue().get(0));
+            }
+        });
+        for(Map.Entry<String,ArrayList<Integer>> entry:so) {
+            ListItem temp = new ListItem(entry.getKey(), Integer.toString(entry.getValue().get(0)), Integer.toString(entry.getValue().get(1)), Integer.toString(entry.getValue().get(2)));
+            data.add(temp);
+        }
     }
 
     private static class SafeHandler extends Handler{
@@ -112,37 +177,6 @@ public class GlobalActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            map = new HashMap<String,ArrayList<Integer>>();
-            for(Map.Entry<String,ArrayList<Integer>> entry:kv.entrySet()){
-                String[] countris = entry.getKey().split("\\|");
-                if(countris.length>1)
-                    continue;
-                String country = countris[0];
-                ArrayList<Integer> nums = map.get(country);
-                if(nums == null){
-                    nums = new ArrayList<Integer>();
-                    nums.add(entry.getValue().get(0));
-                    nums.add(entry.getValue().get(3));
-                    nums.add(entry.getValue().get(2));
-                }
-                else{
-                    nums.set(0,nums.get(0)+entry.getValue().get(0));
-                    nums.set(1,nums.get(1)+entry.getValue().get(3));
-                    nums.set(2,nums.get(2)+entry.getValue().get(2));
-                }
-                map.put(country,nums);
-            }
-            List<Map.Entry<String,ArrayList<Integer>>> so = new ArrayList<Map.Entry<String,ArrayList<Integer>>>(map.entrySet());
-            Collections.sort(so, new Comparator<Map.Entry<String, ArrayList<Integer>>>() {
-                @Override
-                public int compare(Map.Entry<String, ArrayList<Integer>> stringArrayListEntry, Map.Entry<String, ArrayList<Integer>> t1) {
-                    return -stringArrayListEntry.getValue().get(0).compareTo(t1.getValue().get(0));
-                }
-            });
-            for(Map.Entry<String,ArrayList<Integer>> entry:so) {
-                ListItem temp = new ListItem(entry.getKey(), Integer.toString(entry.getValue().get(0)), Integer.toString(entry.getValue().get(1)), Integer.toString(entry.getValue().get(2)));
-                data.add(temp);
-            }
             GlobalActivity activity = (GlobalActivity)ref.get();
             if(activity!=null) {
                 activity.findViewById(R.id.loading).setVisibility(View.GONE);

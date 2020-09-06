@@ -1,4 +1,4 @@
-package com.example.covidnews.expertview;
+package com.example.covidnews.ui.expert;
 
 import android.graphics.Typeface;
 import android.widget.ImageView;
@@ -9,8 +9,10 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.example.covidnews.NetParser.ImageLoader;
 import com.example.covidnews.R;
 
+
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RowAdapter extends BaseQuickAdapter<Expert_row, BaseViewHolder> {
@@ -30,4 +32,5 @@ public class RowAdapter extends BaseQuickAdapter<Expert_row, BaseViewHolder> {
         System.out.println(expert_row.avatar);
         loader.display(avatar,expert_row.avatar);
     }
+
 }

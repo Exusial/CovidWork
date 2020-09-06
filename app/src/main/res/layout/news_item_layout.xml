@@ -19,6 +19,7 @@
             andriod:textSize="30dp"
             andriod:layout_marginLeft="3dp"
             andriod:textStyle="bold"
+            andriod:textColor="#000000"
             andriod:singleLine="true"
             />
         <TextView

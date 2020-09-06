@@ -3,6 +3,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.accounts.AbstractAccountAuthenticator;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.View;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.covidnews.R;
+import com.example.covidnews.globalviews.GlobalActivity;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,14 +36,22 @@ import lecho.lib.hellocharts.view.ColumnChartView;
 
 public class ProvinceActivity extends AppCompatActivity {
 
-    public static HashMap<String,ArrayList<Integer>> kv;
+    public static HashMap<String,ArrayList<Integer>> kv = null;
+    public static HashMap<String,ArrayList<Integer>> prolist = null;
     private static Handler handler;
+    public static boolean hasfinished = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_province);
-        kv = new HashMap<String, ArrayList<Integer>>();
-        kv.clear();
+        if(kv == null) {
+            hasfinished = false;
+            kv = new HashMap<String, ArrayList<Integer>>();
+        }
+        if(prolist==null) {
+            hasfinished = false;
+            prolist = new HashMap<String, ArrayList<Integer>>();
+        }
         ColumnChartView colview = (ColumnChartView)findViewById(R.id.col1);
         handler = new SafeHandler(this);
         Thread thread = new Thread(){
@@ -54,6 +65,23 @@ public class ProvinceActivity extends AppCompatActivity {
     public Message get_data()  {
         Message msg = new Message();
         try {
+            if(kv==null||prolist==null)
+                hasfinished = false;
+            if(hasfinished) {
+                msg.what = 1;
+                return msg;
+            }
+            if(GlobalActivity.hasfinished){
+                kv = GlobalActivity.kv;
+                if(kv!=null) {
+                    process_data();
+                    hasfinished = true;
+                    msg.what = 1;
+                    return msg;
+                }
+                else
+                    GlobalActivity.hasfinished = false;
+            }
             URL url = new URL("https://covid-dashboard.aminer.cn/api/dist/epidemic.json");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -71,25 +99,11 @@ public class ProvinceActivity extends AppCompatActivity {
                 ArrayList<Integer> ndata = null;
                 if (fdata.getData().size() > 0) {
                     ndata = fdata.getData().get(fdata.getData().size() - 1);
-                    String[] countris = cc.split("\\|");
-                    if(countris.length!=2||!countris[0].equals("China"))
-                        continue;
-                    String province = countris[1];
-                    ArrayList<Integer> nums = kv.get(province);
-                    if(nums == null){
-                        nums = new ArrayList<Integer>();
-                        nums.add(ndata.get(0));
-                        nums.add(ndata.get(3));
-                        nums.add(ndata.get(2));
-                    }
-                    else{
-                        nums.set(0,nums.get(0)+ndata.get(0));
-                        nums.set(1,nums.get(1)+ndata.get(3));
-                        nums.set(2,nums.get(2)+ndata.get(2));
-                    }
-                    kv.put(province,nums);
+                    kv.put(cc,ndata);
                 }
             }
+            process_data();
+            hasfinished = true;
             msg.what = 1;
         }
         catch (MalformedURLException e){
@@ -99,6 +113,28 @@ public class ProvinceActivity extends AppCompatActivity {
             System.out.println("IO error!");
         }
         return msg;
+    }
+
+    private void process_data(){
+        for(Map.Entry<String, ArrayList<Integer>> entry:kv.entrySet()) {
+            String[] countris = entry.getKey().split("\\|");
+            ArrayList<Integer> ndata = entry.getValue();
+            if (countris.length != 2 || !countris[0].equals("China"))
+                continue;
+            String province = countris[1];
+            ArrayList<Integer> nums = kv.get(province);
+            if (nums == null) {
+                nums = new ArrayList<Integer>();
+                nums.add(ndata.get(0));
+                nums.add(ndata.get(3));
+                nums.add(ndata.get(2));
+            } else {
+                nums.set(0, nums.get(0) + ndata.get(0));
+                nums.set(1, nums.get(1) + ndata.get(3));
+                nums.set(2, nums.get(2) + ndata.get(2));
+            }
+            prolist.put(province, nums);
+        }
     }
 
     private class SafeHandler extends Handler {
@@ -127,7 +163,7 @@ public class ProvinceActivity extends AppCompatActivity {
                 ArrayList<String> names = new ArrayList<String>();
                 float count = 0.f;
                 ArrayList<Float> maps = new ArrayList<>();
-                for(Map.Entry<String,ArrayList<Integer>> entry:kv.entrySet()){
+                for(Map.Entry<String,ArrayList<Integer>> entry:prolist.entrySet()){
                     subcols = new ArrayList<SubcolumnValue>();
                     maps.add(count);
                     count++;

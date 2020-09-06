@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:andriod="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     andriod:orientation="vertical"
     andriod:layout_width="match_parent"
-    andriod:layout_height="match_parent"
-    >
+    andriod:layout_height="match_parent">
+    <LinearLayout
+        andriod:layout_width="match_parent"
+        andriod:layout_height="match_parent"
+        andriod:orientation="vertical"
+        andriod:layout_weight="1">
     <TextView
         andriod:id="@+id/Title"
         andriod:layout_width="match_parent"
@@ -19,4 +24,6 @@
         andriod:layout_width="match_parent"
         andriod:layout_height="wrap_content">
     </androidx.recyclerview.widget.RecyclerView>
+     </LinearLayout>
+
 </LinearLayout>

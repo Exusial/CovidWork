@@ -5,14 +5,23 @@
     andriod:layout_height="match_parent"
     >
     <LinearLayout
+        andriod:layout_marginTop="3dp"
+        andriod:layout_marginLeft="2dp"
+        andriod:layout_marginRight="2dp"
+        andriod:layout_marginBottom="2dp"
                 andriod:id="@+id/person_des"
                 andriod:layout_width="match_parent"
                 andriod:layout_height="wrap_content"
+                andriod:background="@drawable/title_wrapper"
+                andriod:paddingLeft="3dp"
+                andriod:paddingRight="3dp"
+                andriod:paddingTop="3dp"
+                andriod:paddingBottom="3dp"
                 andriod:orientation="horizontal">
                 <ImageView
                     andriod:id="@+id/de_avatar"
                     andriod:layout_width="100dp"
-                    andriod:layout_height="100dp"
+                    andriod:layout_height="120dp"
                     andriod:layout_marginTop="5dp"
                     andriod:layout_marginLeft="5dp"
                     andriod:src="@color/swallow_purple"

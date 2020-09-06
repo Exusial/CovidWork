@@ -10,7 +10,7 @@
         andriod:layout_height="match_parent"
         andriod:orientation="horizontal"
         andriod:visibility="visible"
-        andriod:layout_marginTop="300dp"
+        andriod:layout_marginTop="250dp"
         andriod:layout_marginLeft="100dp"
         >
         <ProgressBar

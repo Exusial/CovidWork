@@ -1,4 +1,4 @@
-package com.example.covidnews.expertview;
+package com.example.covidnews.ui.expert;
 import android.graphics.Color;
 import android.view.View;
 import com.chad.library.adapter.base.entity.node.BaseExpandNode;

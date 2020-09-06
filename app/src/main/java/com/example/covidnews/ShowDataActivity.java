@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.example.covidnews.globalviews.GlobalActivity;
 import com.example.covidnews.provinceviews.ProvinceActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ShowDataActivity extends AppCompatActivity {
 
