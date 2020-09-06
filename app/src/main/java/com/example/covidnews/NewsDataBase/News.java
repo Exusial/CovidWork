@@ -16,16 +16,22 @@ public class News {
     private String time;                    //代表时间
     private String source;                  //代表来源
     private String language;                //代表语言
+    private String tflag;                   //记录时间戳
+    private String content;                 //记录内容，在点击进入后进行
+    private String imgurls;                 //记录图的url,再点击后进行
 
-    @Generated(hash = 1763158429)
+    @Generated(hash = 1175507491)
     public News(String id, String type, String title, String time, String source,
-            String language) {
+            String language, String tflag, String content, String imgurls) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.time = time;
         this.source = source;
         this.language = language;
+        this.tflag = tflag;
+        this.content = content;
+        this.imgurls = imgurls;
     }
     @Generated(hash = 1579685679)
     public News() {
@@ -114,5 +120,23 @@ public class News {
     }
     public void setSource(String source) {
         this.source = source;
+    }
+    public String getTflag() {
+        return this.tflag;
+    }
+    public void setTflag(String tflag) {
+        this.tflag = tflag;
+    }
+    public String getContent() {
+        return this.content;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
+    public String getImgurls() {
+        return this.imgurls;
+    }
+    public void setImgurls(String imgurls) {
+        this.imgurls = imgurls;
     }
 }
