@@ -228,23 +228,4 @@ public class GlobalActivity extends AppCompatActivity {
 
 }
 
-class single_data{
 
-    private String begin;
-    private ArrayList<ArrayList<Integer>> data;
-    public String getBegin(){
-        return this.begin;
-    }
-
-    public ArrayList<ArrayList<Integer>> getData() {
-        return data;
-    }
-
-    public void setBegin(String begin) {
-        this.begin = begin;
-    }
-
-    public void setData(ArrayList<ArrayList<Integer>> data) {
-        this.data = data;
-    }
-}

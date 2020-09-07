@@ -29,7 +29,9 @@ public class RowAdapter extends BaseQuickAdapter<Expert_row, BaseViewHolder> {
         //title.setTypeface(fk);
         ImageView avatar = baseViewHolder.getView(R.id.avatar);
         ImageLoader loader = new ImageLoader(getContext());
-        System.out.println(expert_row.avatar);
+        avatar.setTag(expert_row.avatar);
+        //avatar.setTag(R.id.avatar);
+        System.out.println(expert_row.avatar);;
         loader.display(avatar,expert_row.avatar);
     }
 

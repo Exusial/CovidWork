@@ -15,7 +15,12 @@
             andriod:textSize="20dp"
             andriod:textStyle="bold"
             andriod:text="显示标签"/>
+        <View
+            andriod:layout_width="fill_parent"
+            andriod:layout_height="2dip"
+            andriod:background="#FF909090" />
         <LinearLayout
+            andriod:layout_marginTop="5dp"
             andriod:layout_width="match_parent"
             andriod:layout_height="wrap_content"
             andriod:orientation="horizontal"
@@ -25,16 +30,21 @@
                 andriod:layout_width="wrap_content"
                 andriod:layout_height="50dp"
                 andriod:text="all"
-                andriod:id="@+id/k_btn1"/>
+                andriod:id="@+id/k_btn1"
+                andriod:background="@drawable/oval_button"/>
             <Button
                 andriod:layout_width="wrap_content"
                 andriod:layout_height="50dp"
                 andriod:text="news"
+                andriod:background="@drawable/oval_button"
+                andriod:layout_marginLeft="5dp"
                 andriod:id="@+id/k_btn2"/>
             <Button
                 andriod:layout_width="wrap_content"
                 andriod:layout_height="50dp"
+                andriod:layout_marginLeft="5dp"
                 andriod:text="paper"
+                andriod:background="@drawable/oval_button"
                 andriod:id="@+id/k_btn3"/>
         </LinearLayout>
         <TextView
@@ -43,26 +53,36 @@
             andriod:textSize="20dp"
             andriod:textStyle="bold"
             andriod:text="已删除标签"/>
+        <View
+            andriod:layout_width="fill_parent"
+            andriod:layout_height="2dip"
+            andriod:background="#FF909090" />
         <LinearLayout
             andriod:layout_width="match_parent"
             andriod:layout_height="wrap_content"
             andriod:orientation="horizontal"
             andriod:animateLayoutChanges="true"
+            andriod:layout_marginTop="5dp"
             >
             <Button
                 andriod:layout_width="wrap_content"
                 andriod:layout_height="50dp"
                 andriod:text="all"
+                andriod:background="@drawable/oval_button"
                 andriod:id="@+id/k_btn4"/>
             <Button
                 andriod:layout_width="wrap_content"
                 andriod:layout_height="50dp"
+                andriod:layout_marginLeft="5dp"
                 andriod:text="news"
+                andriod:background="@drawable/oval_button"
                 andriod:id="@+id/k_btn5"/>
             <Button
                 andriod:layout_width="wrap_content"
                 andriod:layout_height="50dp"
+                andriod:layout_marginLeft="5dp"
                 andriod:text="paper"
+                andriod:background="@drawable/oval_button"
                 andriod:id="@+id/k_btn6"/>
         </LinearLayout>
     </LinearLayout>

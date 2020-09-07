@@ -12,12 +12,15 @@ import android.widget.ImageView;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.covidnews.R;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -35,7 +38,6 @@ import java.util.concurrent.Executors;
 public class ImageLoader {
     //定义一个缓存空间
     private static LruCache<String, Bitmap> imageCaches;
-
     //定义上下文对象
     private Context mContext;
     private static Handler mHandler;
@@ -110,6 +112,10 @@ public class ImageLoader {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void display(ImageView iv, String url){
         //现在内存中查找
+        if(iv.getTag()!=null&&!iv.getTag().equals(url)) {
+            //iv.setImageResource(R.drawable.person);
+            iv.destroyDrawingCache();
+        }
         Bitmap bitmap = imageCaches.get(url);
         if(bitmap != null) {
             //内存中有，显示图片即可
@@ -130,6 +136,7 @@ public class ImageLoader {
         loadFromNet(iv, url);
         Log.d("DISPLAY", "Set Over");
     }
+
 
     private void loadFromNet(ImageView iv, String url){
         mTags.put(iv, url);
@@ -203,7 +210,7 @@ public class ImageLoader {
                 //在显示UI之前，拿到最新的url地址
                 String recentlyUrl = mTags.get(iv);
 
-                if(url.equals(recentlyUrl)){
+                if(url.equals(recentlyUrl)&&iv.getTag().equals(url)){
                     mHandler.post(new Runnable(){
                         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                         @Override
@@ -245,19 +252,11 @@ public class ImageLoader {
     private File getCacheFile(String url){
         String name = MD5Utils.encode(url);
         String state = Environment.getExternalStorageState();
-        if(Environment.MEDIA_MOUNTED.equals(state)){
-            //sd卡
-            File dir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "/icon");
-            if(!dir.exists()){
-                dir.mkdirs();
-            }
-            return new File(dir, name);
-        } else{
-            File dir = new File(mContext.getCacheDir(), "/icon");
-            if(!dir.exists()){
-                dir.mkdirs();
-            }
-            return new File(dir, name);
+        File dir = new File(mContext.getCacheDir(), "/icon");
+        System.out.println(dir);
+        if(!dir.exists()){
+            dir.mkdirs();
         }
+        return new File(dir, name);
     }
 }

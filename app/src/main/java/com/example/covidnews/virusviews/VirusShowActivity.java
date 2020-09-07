@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,6 +41,7 @@ public class VirusShowActivity extends AppCompatActivity {
     public static RecyclerView myview;
     private static ItemAdapter adapter;
     private static LinearLayoutManager manager;
+    public static relay now_item;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +86,10 @@ public class VirusShowActivity extends AppCompatActivity {
             for (int i = 0; i < nested.size(); i++) {
                 JSONObject eobj = nested.getJSONObject(i);
                 relay item = new relay();
+                BigDecimal s = (BigDecimal) eobj.get("hot");
                 item.name = eobj.get("label").toString();
+                String f = s.toString();
+                item.hot = f.substring(0,5>f.length()?f.length():5);
                 AbsInfo temp = JSON.toJavaObject((JSONObject)eobj.get("abstractInfo"), AbsInfo.class);
                 if (temp.getBaidu() == "") {
                     if (temp.getEnwiki() == "") {
@@ -154,11 +159,12 @@ public class VirusShowActivity extends AppCompatActivity {
                         public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                             //System.out.println(">>??");
                             relay send = datasets.get(position);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("item",send);
-                            System.out.println(send.image);
+                            now_item = send;
+                            //Bundle bundle = new Bundle();
+                            //bundle.putSerializable("item",send);
+                            //System.out.println(send.image);
                             Intent intent = new Intent(activity,VirusDetailActivity.class);
-                            intent.putExtras(bundle);
+                            //intent.putExtras(bundle);
                             startActivity(intent);
                         }
                     });
@@ -174,7 +180,7 @@ class relay implements Serializable {
     public ArrayList<relation> relations;
     public String description;
     public String name;
-
+    public String hot;
     relay(){
         relations = new ArrayList<relation>();
     }

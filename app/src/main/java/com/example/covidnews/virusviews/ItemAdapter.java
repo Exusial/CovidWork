@@ -23,21 +23,6 @@ public class ItemAdapter extends BaseQuickAdapter<relay, BaseViewHolder> {
 
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, relay virusItem) {
-        baseViewHolder.setText(R.id.ntitle1,virusItem.name);
-        baseViewHolder.setText(R.id.ntitle3,virusItem.description);
-        ImageLoader loader = new ImageLoader(getContext());
-        ImageView view = baseViewHolder.getView(R.id.avatar);
-        if(virusItem.image!=null&&!virusItem.image.equals(""))
-            loader.display(view,virusItem.image);
-        else {
-            view.setVisibility(View.GONE);
-            if(virusItem.description==null||virusItem.description.equals("")){
-                TextView textView = baseViewHolder.getView(R.id.ntitle3);
-                textView.setVisibility(View.GONE);
-                LinearLayout layout = baseViewHolder.getView(R.id.outline1);
-                ViewGroup.LayoutParams lp = layout.getLayoutParams();
-                lp.height = 100;
-                layout.setLayoutParams(lp);
-        }}
+        baseViewHolder.setText(R.id.ntitle1,virusItem.name).setText(R.id.hots,virusItem.hot);
     }
 }

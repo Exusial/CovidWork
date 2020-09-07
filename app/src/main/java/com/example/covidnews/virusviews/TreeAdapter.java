@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.entity.node.BaseExpandNode;
+import com.chad.library.adapter.base.entity.node.NodeFooterImp;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.example.covidnews.NetParser.ImageLoader;
 import com.example.covidnews.R;
@@ -130,7 +131,7 @@ class PropertyNode extends BaseNode{
     }
 }
 
-class RelationNode extends BaseNode{
+class RelationNode extends BaseNode implements NodeFooterImp {
     public String rel;
     public boolean forward;
     public String rival;
@@ -143,6 +144,12 @@ class RelationNode extends BaseNode{
     @Nullable
     @Override
     public List<BaseNode> getChildNode() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public BaseNode getFooterNode() {
         return null;
     }
 }
@@ -210,9 +217,9 @@ class ImgNodeProvider extends BaseNodeProvider {
     @Override
     public void convert(@NotNull BaseViewHolder helper, @NotNull BaseNode data) {
         ImgNode entity = (ImgNode) data;
-        ImageLoader loader = new ImageLoader(getContext());
-        ImageView view = helper.getView(R.id.v_img);
-        loader.display(view,entity.getTitle());
+        //ImageLoader loader = new ImageLoader(getContext());
+        //ImageView view = helper.getView(R.id.v_img);
+        //loader.display(view,entity.getTitle());
         //helper.setText(R.id.des_text, entity.getTitle());
     }
 

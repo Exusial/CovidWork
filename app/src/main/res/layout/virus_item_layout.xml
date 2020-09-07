@@ -10,39 +10,34 @@
     andriod:layout_marginLeft="5dp"
     andriod:layout_marginRight="5dp"
     >
-    <ImageView
-        andriod:id="@+id/avatar"
-        andriod:layout_width="100dp"
-        andriod:layout_height="100dp"
-        andriod:layout_marginTop="5dp"
-        andriod:layout_marginLeft="5dp"
-        andriod:layout_marginBottom="3dp"
-        andriod:scaleType="centerCrop"
-        />
     <LinearLayout
         andriod:layout_width="wrap_content"
         andriod:layout_height="wrap_content"
-        andriod:orientation="vertical"
+        andriod:orientation="horizontal"
         >
         <TextView
             andriod:id="@+id/ntitle1"
-            andriod:layout_width="wrap_content"
+            andriod:layout_width="200dp"
             andriod:layout_height="40dp"
             andriod:text="Hello"
             andriod:textSize="20dp"
             andriod:layout_marginLeft="10dp"
             andriod:paddingTop="5dp"
             />
-
-        <TextView
-            andriod:id="@+id/ntitle3"
+        <ImageView
             andriod:layout_width="wrap_content"
-            andriod:layout_height="20dp"
-            andriod:text="Hello"
-            andriod:textSize="12dp"
-            andriod:layout_marginTop="36dp"
-            andriod:layout_marginLeft="10dp"
-            andriod:singleLine="true"
+            andriod:layout_height="match_parent"
+            andriod:id="@+id/fires"
+            andriod:src="@drawable/fire"
             />
+        <TextView
+            andriod:layout_width="100dp"
+            andriod:layout_height="match_parent"
+            andriod:id="@+id/hots"
+            andriod:paddingTop="5dp"
+            andriod:layout_marginLeft="13dp"
+            andriod:textSize="20dp"
+            andriod:text="1.00"
+            andriod:singleLine="true"/>
     </LinearLayout>
 </LinearLayout>

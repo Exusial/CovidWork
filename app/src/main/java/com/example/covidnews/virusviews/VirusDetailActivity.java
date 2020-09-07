@@ -28,7 +28,7 @@ public class VirusDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_virus_detail);
         Intent intent = getIntent();
-        relay temp = (relay) intent.getExtras().getSerializable("item");
+        relay temp = VirusShowActivity.now_item;
         TextView title = (TextView)findViewById(R.id.Title);
         title.setText(temp.name);
         List<BaseNode> datasets = new ArrayList<>();

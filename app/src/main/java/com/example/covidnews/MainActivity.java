@@ -2,6 +2,7 @@ package com.example.covidnews;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,10 +16,12 @@ import com.example.covidnews.newsviews.NewsItemActivity;
 import com.example.covidnews.ui.dashboard.DashboardFragment;
 import com.example.covidnews.ui.expert.ExpertFragment;
 import com.example.covidnews.ui.home.HomeFragment;
+import com.example.covidnews.ui.notifications.KindFragment;
 import com.example.covidnews.ui.notifications.NotificationsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -30,6 +33,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.util.ArrayList;
+
+import lecho.lib.hellocharts.view.ColumnChartView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         mainActivity = MainActivity.this;
         HomeFragment.setData();
         HomeFragment homeFragment = new HomeFragment();
-        NotificationsFragment notificationsFragment = new NotificationsFragment();
+        KindFragment notificationsFragment = new KindFragment();
         DashboardFragment dashboardFragment = new DashboardFragment();
         ExpertFragment expertFragment = ExpertFragment.newInstance();
         fragments = new Fragment[]{homeFragment,dashboardFragment,notificationsFragment,expertFragment};
@@ -119,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         final SearchView.SearchAutoComplete textview = view.findViewById(R.id.search_src_text);
+        textview.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        textview.setTextColor(Color.parseColor("#000000"));
         textview.setThreshold(0);
         final ArrayList<String> history = new ArrayList<>();
         history.add("?????");
