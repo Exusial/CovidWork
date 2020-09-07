@@ -16,22 +16,38 @@ public class News {
     private String time;                    //代表时间
     private String source;                  //代表来源
     private String language;                //代表语言
-    private String tflag;                   //记录时间戳
     private String content;                 //记录内容，在点击进入后进行
-    private String imgurls;                 //记录图的url,再点击后进行
+    private String sourceUrl;               //来源url
 
-    @Generated(hash = 1175507491)
+    private String imgurls;                 //记录图的url,再点击后进行,只有新闻有用
+    private String authorName;              //记录作者名字，只有paper有用
+
+    private boolean isClick = false;        //是否点击
+    private boolean addNews = false;        //是否加入news栏目
+    private boolean addPaper = false;       //是否加入paper栏目
+    private boolean addAll = false;         //是否加入all栏目
+    private long tflag;                     //记录时间戳
+
+    @Generated(hash = 1987729510)
     public News(String id, String type, String title, String time, String source,
-            String language, String tflag, String content, String imgurls) {
+            String language, String content, String sourceUrl, String imgurls,
+            String authorName, boolean isClick, boolean addNews, boolean addPaper,
+            boolean addAll, long tflag) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.time = time;
         this.source = source;
         this.language = language;
-        this.tflag = tflag;
         this.content = content;
+        this.sourceUrl = sourceUrl;
         this.imgurls = imgurls;
+        this.authorName = authorName;
+        this.isClick = isClick;
+        this.addNews = addNews;
+        this.addPaper = addPaper;
+        this.addAll = addAll;
+        this.tflag = tflag;
     }
     @Generated(hash = 1579685679)
     public News() {
@@ -121,12 +137,6 @@ public class News {
     public void setSource(String source) {
         this.source = source;
     }
-    public String getTflag() {
-        return this.tflag;
-    }
-    public void setTflag(String tflag) {
-        this.tflag = tflag;
-    }
     public String getContent() {
         return this.content;
     }
@@ -138,5 +148,47 @@ public class News {
     }
     public void setImgurls(String imgurls) {
         this.imgurls = imgurls;
+    }
+    public String getAuthorName() {
+        return this.authorName;
+    }
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+    public String getSourceUrl() {
+        return this.sourceUrl;
+    }
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
+    public boolean getIsClick() {
+        return this.isClick;
+    }
+    public void setIsClick(boolean isClick) {
+        this.isClick = isClick;
+    }
+    public long getTflag() {
+        return this.tflag;
+    }
+    public void setTflag(long tflag) {
+        this.tflag = tflag;
+    }
+    public boolean getAddNews() {
+        return this.addNews;
+    }
+    public void setAddNews(boolean addNews) {
+        this.addNews = addNews;
+    }
+    public boolean getAddPaper() {
+        return this.addPaper;
+    }
+    public void setAddPaper(boolean addPaper) {
+        this.addPaper = addPaper;
+    }
+    public boolean getAddAll() {
+        return this.addAll;
+    }
+    public void setAddAll(boolean addAll) {
+        this.addAll = addAll;
     }
 }
