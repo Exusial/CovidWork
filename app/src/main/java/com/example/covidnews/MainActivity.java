@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import com.example.covidnews.NetParser.ImageLoader;
+import com.example.covidnews.NewsDataBase.ImgDataBase;
+import com.example.covidnews.NewsDataBase.NewsDataBase;
 import com.example.covidnews.listviews.NewsAdapter;
 import com.example.covidnews.listviews.NewsItem;
 import com.example.covidnews.newsviews.NewsItemActivity;
@@ -45,9 +48,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainActivity = MainActivity.this;
+        ImageLoader imageLoader = ImageLoader.getInstance();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                init();
+            }
+        }).start();
+    }
+
+    private void init(){
+        NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
+        newsDataBase.DeleteByTflag();
+        ImgDataBase imgDataBase = ImgDataBase.getDataBase("ImgTest.db");
+        imgDataBase.DeleteByTflag();
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-        mainActivity = MainActivity.this;
         HomeFragment.setData();
         HomeFragment homeFragment = new HomeFragment();
         KindFragment notificationsFragment = new KindFragment();
@@ -96,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
     }
 
     @SuppressLint("RestrictedApi")

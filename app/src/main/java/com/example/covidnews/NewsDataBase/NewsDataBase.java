@@ -1,12 +1,16 @@
 package com.example.covidnews.NewsDataBase;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.icu.text.SimpleDateFormat;
+import android.util.Log;
 
 import com.example.covidnews.MainActivity;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -196,7 +200,7 @@ public class NewsDataBase {
         switch(types.size()) {
             case 1:
                 news = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Type.eq(types.get(0)))
-                    .orderAsc(NewsDao.Properties.Time).limit(limit).offset(offset).list();
+                        .orderAsc(NewsDao.Properties.Time).limit(limit).offset(offset).list();
                 break;
             default:
                 news = (ArrayList<News>) newsDao.queryBuilder().limit(limit).offset(offset).orderAsc(NewsDao.Properties.Time).list();
@@ -207,17 +211,32 @@ public class NewsDataBase {
 
     public ArrayList<News> GetTypes(String types, int limit, int offset){
         ArrayList<News> news = new ArrayList<>();
+        long tflag = System.currentTimeMillis() - 599999;
         switch(types){
             case "paper":
             case "news":
-                news = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Type.eq(types)).limit(limit)
-                        .offset(offset).orderDesc(NewsDao.Properties.Time).list();
+                news = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Type.eq(types)).limit(limit).offset(offset).orderDesc(NewsDao.Properties.Time).list();
                 break;
             default:
                 news = (ArrayList<News>) newsDao.queryBuilder().limit(limit).offset(offset).orderDesc(NewsDao.Properties.Time).list();
                 break;
-
         }
         return news;
+    }
+
+    public synchronized void DeleteByTflag(){
+        long tflag = System.currentTimeMillis();
+        int couldSize = (int)newsDao.count() - 10;
+        if(couldSize <= 0)
+            return ;
+        tflag = tflag - 600000;
+        ArrayList<News> newsArrayList = (ArrayList<News>) newsDao.queryBuilder().where(NewsDao.Properties.Tflag.le(tflag)).orderAsc(NewsDao.Properties.Tflag).list();
+        int size = newsArrayList.size();
+        Log.d("DeleteSize:", size + "");
+        for(int i = 0; (i <= size - 1) && (i <= couldSize - 1); i ++){
+            News news = newsArrayList.get(i);
+            Log.d("Delete:", news.getId());
+            newsDao.delete(news);
+        }
     }
 }
