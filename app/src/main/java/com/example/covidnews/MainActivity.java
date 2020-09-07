@@ -2,8 +2,8 @@ package com.example.covidnews;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,15 +18,11 @@ import com.example.covidnews.listviews.NewsItem;
 import com.example.covidnews.newsviews.NewsItemActivity;
 import com.example.covidnews.ui.dashboard.DashboardFragment;
 import com.example.covidnews.ui.expert.ExpertFragment;
-import com.example.covidnews.ui.expert.MainExpertFragment;
 import com.example.covidnews.ui.home.HomeFragment;
-import com.example.covidnews.ui.notifications.KindFragment;
 import com.example.covidnews.ui.notifications.NotificationsFragment;
-import com.example.covidnews.virusviews.VirusFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -38,30 +34,28 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.util.ArrayList;
-
-import lecho.lib.hellocharts.view.ColumnChartView;
+import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity {
 
     private int sel_frag;
     private static MainActivity mainActivity;
     private Fragment[] fragments;
+    final LinkedList<String> history = new LinkedList<>();
+    ArrayAdapter<String> temp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mainActivity = MainActivity.this;
+
         ImageLoader imageLoader = ImageLoader.getInstance();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                init();
-            }
-        }).start();
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -98,35 +92,34 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
                     }
-                    case R.id.navigation_knowledge:{
-                        if(sel_frag!=4)
-                        {
-                            switchFragment(sel_frag,4);
-                            sel_frag=4;
-                        }
-                        return true;
-                    }
                 }
                 return false;
             }
         });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                init();
+            }
+        }).start();
     }
+
 
     private void init(){
         NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
         newsDataBase.DeleteByTflag();
         ImgDataBase imgDataBase = ImgDataBase.getDataBase("ImgTest.db");
         imgDataBase.DeleteByTflag();
+
         HomeFragment.setData();
         HomeFragment homeFragment = new HomeFragment();
-        KindFragment notificationsFragment = new KindFragment();
+        NotificationsFragment notificationsFragment = new NotificationsFragment();
         DashboardFragment dashboardFragment = new DashboardFragment();
-        MainExpertFragment expertFragment = new MainExpertFragment();
-        VirusFragment virusFragment = new VirusFragment();
-        fragments = new Fragment[]{homeFragment,dashboardFragment,notificationsFragment,expertFragment,virusFragment};
+        ExpertFragment expertFragment = ExpertFragment.newInstance();
+        fragments = new Fragment[]{homeFragment,dashboardFragment,notificationsFragment,expertFragment};
         getSupportFragmentManager().beginTransaction().add(R.id.layout,homeFragment).show(homeFragment).commitAllowingStateLoss();;
         sel_frag = 0;
-
     }
 
     @SuppressLint("RestrictedApi")
@@ -144,6 +137,11 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString("key",query);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                history.push(query);
+                if(history.size() >= 8)
+                    history.remove();
+                Log.d("HISTORY:", history.get(0));
+                temp.notifyDataSetChanged();
                 return false;
             }
 
@@ -153,13 +151,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         final SearchView.SearchAutoComplete textview = view.findViewById(R.id.search_src_text);
-        textview.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        textview.setTextColor(Color.parseColor("#000000"));
+        temp = new ArrayAdapter<String>(this,R.layout.search_item_layout,history);
         textview.setThreshold(0);
-        final ArrayList<String> history = new ArrayList<>();
-        history.add("?????");
-        history.add("!!!!");
-        ArrayAdapter<String> temp = new ArrayAdapter<String>(this,R.layout.search_item_layout,history);
         textview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
