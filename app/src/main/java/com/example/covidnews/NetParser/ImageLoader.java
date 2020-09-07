@@ -1,16 +1,25 @@
 package com.example.covidnews.NetParser;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.util.LruCache;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import androidx.annotation.RequiresApi;
+
+import com.example.covidnews.MainActivity;
+import com.example.covidnews.NewsDataBase.Img;
+import com.example.covidnews.NewsDataBase.ImgDataBase;
+import com.example.covidnews.NewsDataBase.News;
+import com.example.covidnews.NewsDataBase.NewsDataBase;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +27,10 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,24 +45,20 @@ import java.util.concurrent.Executors;
  */
 
 public class ImageLoader {
+    private static ImageLoader imageLoader;
+
     //定义一个缓存空间
     private static LruCache<String, Bitmap> imageCaches;
 
     //定义上下文对象
     private Context mContext;
-    private static Handler mHandler;
 
-    //声明线程池，全局仅有一个，用来控制访问的空间
-    private static ExecutorService mPool;
 
-    //解决错位问题
-    private Map<ImageView, String> mTags = new LinkedHashMap<>();
-
-    public ImageLoader(Context context){
+    private ImageLoader(Context context){
         this.mContext = context;
         if(imageCaches == null){
             //申请一个内存空间
-            int maxSize = (int)(Runtime.getRuntime().freeMemory() / 4);
+            int maxSize = (int)(Runtime.getRuntime().freeMemory() / 8);
             //实例化
             imageCaches = new LruCache<String, Bitmap>(maxSize){
                 @Override
@@ -59,15 +67,17 @@ public class ImageLoader {
                 }
             };
         }
-        //实例化我的Handler
-        if(mHandler == null){
-            //实例化Handler来处理图片放入
-            mHandler = new Handler();
+    }
+
+    public static ImageLoader getInstance(){
+        if(imageLoader == null){
+            synchronized (ImageLoader.class){
+                if(imageLoader == null){
+                    imageLoader = new ImageLoader(MainActivity.getMainActivity());
+                }
+            }
         }
-        if(mPool == null){
-            //创建一个固定大小的线程池
-            mPool = Executors.newFixedThreadPool(3);
-        }
+        return imageLoader;
     }
 
     //放缩
@@ -77,6 +87,10 @@ public class ImageLoader {
         int height = bp.getHeight();
         int ivWidth = iv.getWidth();
         int ivHeight = iv.getHeight();
+
+        ivWidth = ivWidth > 0? ivWidth : 480;
+        ivHeight = ivHeight > 0? ivHeight : 360;
+
         double scale = 1.0;
         double dx = (double)width/ivWidth;
         double dy = (double)height/ivHeight;
@@ -91,131 +105,93 @@ public class ImageLoader {
         int newWidth = (int)(double)(width / scale);
         int newHeight = (int)(double)(height / scale);
 
-        Log.d("SCALE:", "" + dx);
-        Log.d("SCALE:", "" + dy);
-        Log.d("SCALE:", "" + scale);
-        Log.d("SCALE:", "" + ivWidth);
-        Log.d("SCALE:", "" + ivHeight);
-        Log.d("SCALE:", "" + newWidth);
-        Log.d("SCALE:", "" + newHeight);
-
         bp = Bitmap.createScaledBitmap(bp,newWidth,newHeight,true);
-
     }
 
-    //放置图片
-    //@param iv     ---------    需要放进去的ImageView
-    //@param url    ---------    图片所在的位置
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void display(ImageView iv, String url){
+    public Bitmap display(ImageView iv, String url){
         //现在内存中查找
         Bitmap bitmap = imageCaches.get(url);
         if(bitmap != null) {
             //内存中有，显示图片即可
             ScaleImage(iv, bitmap);
-            iv.setImageBitmap(bitmap);
-            Log.d("DISPLAY", "Set Over");
-            return ;
+            Bitmap finalBitmap1 = bitmap;
+            long date = System.currentTimeMillis();
+            ImgDataBase db = ImgDataBase.getDataBase("ImgTest.db");
+            db.uploadTFlag(url, date);
+            return finalBitmap1;
+
         }
         //如果内存中没有，需要在本地获取
         bitmap = loadFromLocal(url);
         if(bitmap != null){
             ScaleImage(iv, bitmap);
-            iv.setImageBitmap(bitmap);
-            Log.d("DISPLAY", "Set Over");
-            return ;
+            Bitmap finalBitmap = bitmap;
+            long date = System.currentTimeMillis();
+            ImgDataBase db = ImgDataBase.getDataBase("ImgTest.db");
+            db.uploadTFlag(url, date);
+            return finalBitmap;
         }
-        //否则需要从网络获取
-        loadFromNet(iv, url);
-        Log.d("DISPLAY", "Set Over");
+        return null;
     }
 
-    private void loadFromNet(ImageView iv, String url){
-        mTags.put(iv, url);
-        mPool.execute(new LoadImageTask(iv, url));
+    public Bitmap GetFromNet(ImageView iv, String url){
+        return loadFromNet(iv, url);
     }
 
-    private class LoadImageTask implements Runnable{
-        private ImageView iv;
-        private String url;
+    private Bitmap loadFromNet(ImageView iv, String url){
+        //从网络中获得图片
+        try{
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            //连接服务器超时
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            //连接
+            connection.connect();
 
-        public LoadImageTask(ImageView iv, String url){
-            this.iv = iv;
-            this.url = url;
-        }
+            //获取流
+            InputStream is = connection.getInputStream();
 
-        @Override
-        public void run() {
-            //从网络中获得图片
-            try{
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                //连接服务器超时
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
-                //连接
-                connection.connect();
+            //将流变成bitmap
+            Bitmap bitmap = BitmapFactory.decodeStream(is);
+            //获取宽高
 
-                //获取流
-                InputStream is = connection.getInputStream();
+            int height = bitmap.getHeight();
+            int width = bitmap.getWidth();
 
-                //将流变成bitmap
-                Bitmap bitmap = BitmapFactory.decodeStream(is);
-                //获取宽高
+            int ivWidth = iv.getWidth();
+            int ivHeight = iv.getHeight();
 
-                int height = bitmap.getHeight();
-                int width = bitmap.getWidth();
+            ivWidth = ivWidth > 0? ivWidth : 480;
+            ivHeight = ivHeight > 0? ivHeight : 360;
 
-                Log.d("FALSE LOAD:", "" + width);
-                Log.d("FALSE LOAD:", "" + height);
+            int dx = width/ivWidth;
+            int dy = height/ivHeight;
 
-                int ivWidth = iv.getWidth();
-                int ivHeight = iv.getHeight();
+            int scale = 1;
 
-                int dx = width/ivWidth;
-                int dy = height/ivHeight;
-
-                int scale = 1;
-
-                if(dx > dy && dy >= 1){
-                    scale = dx;
-                }
-                if(dy > dx && dx >= 1){
-                    scale = dy;
-                }
-
-                int newWidth = width / scale;
-                int newHeight = height / scale;
-
-                bitmap = Bitmap.createScaledBitmap(bitmap,newWidth,newHeight,true);
-
-                Log.d("TRUE:", "" + dx);
-                Log.d("TRUE:", "" + dy);
-                Log.d("TRUE:" , "" + bitmap.getWidth());
-                Log.d("TRUE:", "" + bitmap.getHeight());
-
-                //存储到本地
-                saveToLocal(bitmap , url);
-
-                //存储到内存
-                imageCaches.put(url, bitmap);
-
-                //在显示UI之前，拿到最新的url地址
-                String recentlyUrl = mTags.get(iv);
-
-                if(url.equals(recentlyUrl)){
-                    mHandler.post(new Runnable(){
-                        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                        @Override
-                        public void run(){
-                            display(iv, url);
-                        }
-                    });
-                }
-
-            }catch (Exception e){
-                e.printStackTrace();
+            if(dx > dy && dy >= 1){
+                scale = dx;
             }
+            if(dy > dx && dx >= 1){
+                scale = dy;
+            }
+
+            int newWidth = width / scale;
+            int newHeight = height / scale;
+
+            bitmap = Bitmap.createScaledBitmap(bitmap,newWidth,newHeight,true);
+
+            //存储到本地
+            saveToLocal(bitmap , url);
+
+            //存储到内存
+            imageCaches.put(url, bitmap);
+
+            return bitmap;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -223,11 +199,20 @@ public class ImageLoader {
         File file = getCacheFile(url);
         FileOutputStream fos = new FileOutputStream(file);
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+
+        long date = System.currentTimeMillis();
+
+        ImgDataBase db = ImgDataBase.getDataBase("ImgTest.db");
+
+        Img imgs = new Img();
+        imgs.setTflag(date);
+        imgs.setPath(file.toString());
+        imgs.setUrl(url);
+        db.saveOneData(imgs);
     }
 
     //从本地获取图片信息
     private Bitmap loadFromLocal(String url){
-        Log.d("",url);
         //从本地得到存储路径
         File file = getCacheFile(url);
         if(file.exists()){
@@ -245,19 +230,11 @@ public class ImageLoader {
     private File getCacheFile(String url){
         String name = MD5Utils.encode(url);
         String state = Environment.getExternalStorageState();
-        if(Environment.MEDIA_MOUNTED.equals(state)){
-            //sd卡
-            File dir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "/icon");
-            if(!dir.exists()){
-                dir.mkdirs();
-            }
-            return new File(dir, name);
-        } else{
-            File dir = new File(mContext.getCacheDir(), "/icon");
-            if(!dir.exists()){
-                dir.mkdirs();
-            }
-            return new File(dir, name);
+        File dir = new File(mContext.getCacheDir(), "/icon");
+        if(!dir.exists()){
+            dir.mkdirs();
         }
+        return new File(dir, name);
+//      }
     }
 }
