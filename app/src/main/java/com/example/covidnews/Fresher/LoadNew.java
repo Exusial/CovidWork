@@ -24,21 +24,12 @@ public class LoadNew implements Runnable{
     private NewsFragment fragment;
     private String kind;
     private NewsItemActivity mContext;
-    private int workkind;
 
     public LoadNew(NewsAdapter adapter, NewsFragment fragment, String kind){
         this.adapter = adapter;
         mHandler = new Handler();
         this.fragment = fragment;
         this.kind = kind.toLowerCase();
-        workkind = 0;//
-    }
-
-    public LoadNew(NewsAdapter adapter, NewsItemActivity context){
-        this.adapter = adapter;
-        mHandler = new Handler();
-        this.mContext = context;
-        workkind = 1;
     }
 
     @Override
@@ -47,7 +38,8 @@ public class LoadNew implements Runnable{
         EventsParser eventsParser = new EventsParser();
         ArrayList<News> newsArrayList = eventsParser.getNews(kind);
         if(newsArrayList.size() == 0){
-            ;
+            //失败回调
+            fragment.RefreshReCall(2);
         }else{
             int s = newsArrayList.size();
             for(int i = 0; i <= s - 1; i ++) {
@@ -56,25 +48,19 @@ public class LoadNew implements Runnable{
                 ni.setKind(news.getType());
                 ni.setDescription(news.getSource());
                 ni.setId(news.getId());
-                if (workkind == 0){
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            fragment.freshNews(adapter, ni, 0);
-                        }
-                    });
-                }
-            else{
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mContext.freshNews(adapter, ni, 0);
-                        }
-                    });
-                }
-
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        fragment.freshNews(adapter, ni, 0);
+                    }
+                });
             }
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    fragment.RefreshReCall(1);                 //正确回调
+                }
+            });
         }
-
     }
 }

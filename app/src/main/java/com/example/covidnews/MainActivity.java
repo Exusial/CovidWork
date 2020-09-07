@@ -3,6 +3,7 @@ package com.example.covidnews;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,44 +34,28 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity {
 
     private int sel_frag;
     private static MainActivity mainActivity;
     private Fragment[] fragments;
+    final LinkedList<String> history = new LinkedList<>();
+    ArrayAdapter<String> temp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mainActivity = MainActivity.this;
+
         ImageLoader imageLoader = ImageLoader.getInstance();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                init();
-            }
-        }).start();
-    }
-
-    private void init(){
-        NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
-        newsDataBase.DeleteByTflag();
-        ImgDataBase imgDataBase = ImgDataBase.getDataBase("ImgTest.db");
-        imgDataBase.DeleteByTflag();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-        HomeFragment.setData();
-        HomeFragment homeFragment = new HomeFragment();
-        NotificationsFragment notificationsFragment = new NotificationsFragment();
-        DashboardFragment dashboardFragment = new DashboardFragment();
-        ExpertFragment expertFragment = ExpertFragment.newInstance();
-        fragments = new Fragment[]{homeFragment,dashboardFragment,notificationsFragment,expertFragment};
-        getSupportFragmentManager().beginTransaction().add(R.id.layout,homeFragment).show(homeFragment).commitAllowingStateLoss();;
-        sel_frag = 0;
+
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -111,6 +96,30 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                init();
+            }
+        }).start();
+    }
+
+
+    private void init(){
+        NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
+        newsDataBase.DeleteByTflag();
+        ImgDataBase imgDataBase = ImgDataBase.getDataBase("ImgTest.db");
+        imgDataBase.DeleteByTflag();
+
+        HomeFragment.setData();
+        HomeFragment homeFragment = new HomeFragment();
+        NotificationsFragment notificationsFragment = new NotificationsFragment();
+        DashboardFragment dashboardFragment = new DashboardFragment();
+        ExpertFragment expertFragment = ExpertFragment.newInstance();
+        fragments = new Fragment[]{homeFragment,dashboardFragment,notificationsFragment,expertFragment};
+        getSupportFragmentManager().beginTransaction().add(R.id.layout,homeFragment).show(homeFragment).commitAllowingStateLoss();;
+        sel_frag = 0;
     }
 
     @SuppressLint("RestrictedApi")
@@ -128,6 +137,11 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString("key",query);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                history.push(query);
+                if(history.size() >= 8)
+                    history.remove();
+                Log.d("HISTORY:", history.get(0));
+                temp.notifyDataSetChanged();
                 return false;
             }
 
@@ -137,11 +151,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         final SearchView.SearchAutoComplete textview = view.findViewById(R.id.search_src_text);
+        temp = new ArrayAdapter<String>(this,R.layout.search_item_layout,history);
         textview.setThreshold(0);
-        final ArrayList<String> history = new ArrayList<>();
-        history.add("?????");
-        history.add("!!!!");
-        ArrayAdapter<String> temp = new ArrayAdapter<String>(this,R.layout.search_item_layout,history);
         textview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

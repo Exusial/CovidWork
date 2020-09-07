@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +45,7 @@ public class NewsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private  NewsAdapter adapter;
-    private  int newewst = 10;
+    private NewsAdapter adapter;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -88,7 +88,6 @@ public class NewsFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
     }
 
     @Override
@@ -110,18 +109,15 @@ public class NewsFragment extends Fragment {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 Thread ts = new Thread(new LoadNew(adapter,NewsFragment.this,kind));
-                refreshlayout.finishRefresh(!ts.isAlive());//传入false表示刷新失败
                 refreshlayout.setDisableContentWhenRefresh(true);
                 ts.start();
-                newewst +=5;
-                System.out.println("Doing");
             }
         });
+
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
                 Thread ts = new Thread(new LoadMore(adapter,NewsFragment.this,kind));
-                refreshlayout.finishLoadMore(!ts.isAlive());//传入false表示刷新失败
                 refreshlayout.setDisableContentWhenLoading(true);
                 ts.start();
             }
@@ -137,6 +133,28 @@ public class NewsFragment extends Fragment {
             adapter.addData(position, ni);
         }
         adapter.notifyDataSetChanged();
+    }
+
+    public void RefreshReCall(int newState){
+        switch(newState){
+            case 1:
+                refreshLayout.finishRefresh(true);
+                break;
+            case 2:
+                refreshLayout.finishRefresh(false);
+                break;
+        }
+    }
+
+    public void LoadReCall(int newState){
+        switch (newState){
+            case 1:
+                refreshLayout.finishLoadMore(true);
+                break;
+            case 2:
+                refreshLayout.finishLoadMore(false);
+                break;
+        }
     }
 
 }
