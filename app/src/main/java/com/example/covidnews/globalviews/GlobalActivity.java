@@ -203,18 +203,18 @@ public class GlobalActivity extends AppCompatActivity {
                 if(map.get(query)!=null){
                     ArrayList<Integer> target = map.get(query);
                     AlertDialog dialog = new AlertDialog.Builder(GlobalActivity.this).setTitle(query).setMessage(
-                            "感染人数"+target.get(0)+"\n"+"死亡人数"+target.get(1)+"\n"+"痊愈人数"+target.get(2)
+                            "感染人数  "+target.get(0)+"\n"+"死亡人数  "+target.get(1)+"\n"+"痊愈人数  "+target.get(2)
                     ).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
+
                         }
                     }).create();
                     dialog.setCancelable(true);
                     dialog.show();
                 }
                 else
-                    Toast.makeText(getApplicationContext(),"没有找到对应国家，请输入国家英文名重试？",Toast.LENGTH_LONG);
+                    Toast.makeText(GlobalActivity.this,"没有找到国家，请输入国家英文名重试？",Toast.LENGTH_LONG).show();
                 return false;
             }
 

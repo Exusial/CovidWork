@@ -9,16 +9,6 @@
         andriod:layout_height="match_parent"
         andriod:orientation="vertical"
         andriod:layout_weight="1">
-        <TextView
-            andriod:id="@+id/Title"
-            andriod:layout_width="match_parent"
-            andriod:layout_height="wrap_content"
-            andriod:text="新冠学者"
-            andriod:textSize="40sp"
-            andriod:layout_marginLeft="5dp"
-            andriod:layout_gravity="center"
-            andriod:visibility="visible"
-            />
         <androidx.recyclerview.widget.RecyclerView
             andriod:id="@+id/rview"
             andriod:layout_width="match_parent"

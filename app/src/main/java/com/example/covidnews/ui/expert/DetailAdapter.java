@@ -206,6 +206,8 @@ class FrontProvider extends BaseNodeProvider {
         ColumnChartData datasets = new ColumnChartData(cols);
         Axis X,Y;
         X = Axis.generateAxisFromCollection(maps,names);
+        X.setTextColor(Color.parseColor("#000000"));
+        X.setTextSize(10);
         Y = new Axis();
         Y.setHasLines(true);
         Y.setName("");
