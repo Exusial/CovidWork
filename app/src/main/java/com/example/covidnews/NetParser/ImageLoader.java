@@ -53,6 +53,12 @@ public class ImageLoader {
     //定义上下文对象
     private Context mContext;
 
+    private static Handler mHandler;
+
+    private static ExecutorService mPool;
+
+    private Map<ImageView, String> mTags = new LinkedHashMap<>();
+
 
     private ImageLoader(Context context){
         this.mContext = context;
@@ -66,6 +72,15 @@ public class ImageLoader {
                     return value.getRowBytes() * value.getHeight();
                 }
             };
+        }
+        //实例化我的Handler
+        if(mHandler == null){
+            //实例化Handler来处理图片放入
+            mHandler = new Handler();
+        }
+        if(mPool == null){
+            //创建一个固定大小的线程池
+            mPool = Executors.newFixedThreadPool(5);
         }
     }
 
@@ -235,6 +250,129 @@ public class ImageLoader {
             dir.mkdirs();
         }
         return new File(dir, name);
-//      }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void displayNet(final ImageView iv, String url){
+        //现在内存中查找
+        Bitmap bitmap = imageCaches.get(url);
+        if(bitmap != null) {
+            //内存中有，显示图片即可
+            ScaleImage(iv, bitmap);
+            final Bitmap finalBitmap1 = bitmap;
+            long date = System.currentTimeMillis();
+            ImgDataBase db = ImgDataBase.getDataBase("ImgTest.db");
+            db.uploadTFlag(url, date);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    iv.setImageBitmap(finalBitmap1);
+                }
+            });
+            return ;
+        }
+        //如果内存中没有，需要在本地获取
+        bitmap = loadFromLocal(url);
+        if(bitmap != null){
+            ScaleImage(iv, bitmap);
+            final Bitmap finalBitmap = bitmap;
+            long date = System.currentTimeMillis();
+            ImgDataBase db = ImgDataBase.getDataBase("ImgTest.db");
+            db.uploadTFlag(url, date);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    iv.setImageBitmap(finalBitmap);
+                }
+            });
+            return ;
+        }
+        //否则需要从网络获取
+        loadFromNetTrick(iv, url);
+    }
+
+    private void loadFromNetTrick(ImageView iv, String url){
+        mTags.put(iv, url);
+        mPool.execute(new LoadImageTask(iv, url));
+    }
+
+    private class LoadImageTask implements Runnable{
+        private ImageView iv;
+        private String url;
+
+        public LoadImageTask(ImageView iv, String url){
+            this.iv = iv;
+            this.url = url;
+        }
+
+        @Override
+        public void run() {
+            //从网络中获得图片
+            try{
+                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                //连接服务器超时
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                //连接
+                connection.connect();
+
+                //获取流
+                InputStream is = connection.getInputStream();
+
+                //将流变成bitmap
+                Bitmap bitmap = BitmapFactory.decodeStream(is);
+                //获取宽高
+
+                int height = bitmap.getHeight();
+                int width = bitmap.getWidth();
+
+                Log.d("FALSE LOAD:", "" + width);
+                Log.d("FALSE LOAD:", "" + height);
+
+                int ivWidth = iv.getWidth();
+                int ivHeight = iv.getHeight();
+
+                ivWidth = ivWidth > 0? ivWidth : 480;
+                ivHeight = ivHeight > 0? ivHeight : 360;
+
+                int dx = width/ivWidth;
+                int dy = height/ivHeight;
+
+                int scale = 1;
+
+                if(dx > dy && dy >= 1){
+                    scale = dx;
+                }
+                if(dy > dx && dx >= 1){
+                    scale = dy;
+                }
+
+                int newWidth = width / scale;
+                int newHeight = height / scale;
+
+                bitmap = Bitmap.createScaledBitmap(bitmap,newWidth,newHeight,true);
+
+                //存储到本地
+                saveToLocal(bitmap , url);
+
+                //存储到内存
+                imageCaches.put(url, bitmap);
+
+                //在显示UI之前，拿到最新的url地址
+                String recentlyUrl = (String)iv.getTag();
+
+                if(url.equals(recentlyUrl)){
+                    mHandler.post(new Runnable(){
+                        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                        @Override
+                        public void run(){
+                            display(iv, url);
+                        }
+                    });
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 }
