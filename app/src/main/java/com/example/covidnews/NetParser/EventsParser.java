@@ -42,8 +42,6 @@ public class EventsParser {
         String U = sb.toString();
         NewsDataBase dataBase = NewsDataBase.getDataBase("NewsTest.db");
         ArrayList<News> ManyNews = new ArrayList<>();
-        int addSize = 0;
-        boolean res = true;
         try {
             //首先获取新闻条目的events
             URL url = new URL(U);
@@ -52,11 +50,9 @@ public class EventsParser {
             BufferedReader cin = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder all = new StringBuilder();
             String line;
-
             while((line = cin.readLine()) != null){
                 all.append(line);
             }
-
             cin.close();
             String AllEvents = all.toString();
             Map<String, JSON> map = JSONObject.parseObject(AllEvents, Map.class);
@@ -65,35 +61,100 @@ public class EventsParser {
             JSONArray datas = (JSONArray) map.get("data");
             for(int i = 0; i<=datas.size() - 1; i ++){
                 News news = new News();
-
                 JSONObject object = datas.getJSONObject(i);
                 news.setId((String)object.get("_id"));              //设置唯一id
                 news.setTitle((String)object.get("title"));         //设置标题
                 news.setType((String)object.get("type"));           //设置类
                 news.setSource((String)object.get("source"));       //设置来源
                 String time = (String)object.get("time");           //设置时间
+                news.setContent((String)object.get("content"));     //设置内容
+                news.setLanguage((String)object.get("lang"));       //设置语言
                 time = time.split(" ")[0];
                 time = TimeChecker.CheckString(time);
                 news.setTime(time);
+                if(news.getType().equals("news")){                  //设置新闻图片
+                    JSONArray urls = object.getJSONArray("urls");
+                    if(urls.size() != 0){
+                        String u = (String)urls.get(0);
+                        news.setSourceUrl(u);
+                    }
+                }else if(news.getType().equals("paper")){           //设置来源pdf
+                    JSONArray urls = object.getJSONArray("urls");
+                    if(urls.size() != 0){
+                        StringBuilder img = new StringBuilder();
+                        for(int j = 0; j <= urls.size() - 1; j ++){
+                            img.append((String)urls.get(j));
+                            img.append(",");
+                        }
+                        String ImgUrls = img.toString();
+                        news.setSourceUrl(ImgUrls);
+                    }
+                    //设置作者名字
+                    JSONArray names = object.getJSONArray("authors");
+                    StringBuilder nameBuilder = new StringBuilder();
+                    for(int j = 0; j <= names.size() - 1; j++){
+                        JSONObject author = names.getJSONObject(j);
+                        String name = (String)author.get("name");
+                        nameBuilder.append(name);
+                        nameBuilder.append(",");
+                    }
+                    String nm = nameBuilder.toString();
+                    news.setAuthorName(nm);
 
-                @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-                String date = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
+                    changeType(type, news);
+                }
+
+                long date = System.currentTimeMillis();
                 news.setTflag(date);
+
                 News alreadyHave = dataBase.getOneData(news.getId());//记录时间戳，定时清楚记录
                 if(alreadyHave == null) {                            //如果没有才加入
-                    addSize ++;
                     ManyNews.add(news);
                     newsForAdd.add(news);
+                }else{
+                    //否则判断是否已经加入在该栏目中了
+                    if(!getType(type, alreadyHave)){
+                        changeType(type, alreadyHave);
+                        ManyNews.add(alreadyHave);
+                        newsForAdd.add(news);
+                    }
                 }
             }
-            if((dataBase.getCount() + addSize) == total)
-                res = false;
             dataBase.saveData(ManyNews);
         } catch(IOException e) {
             e.printStackTrace();
         }
         return ManyNews.size();
+    }
+
+    private void changeType(String type, News news){
+        switch (type){
+            case "paper":
+                news.setAddPaper(true);
+                break;
+            case "news":
+                news.setAddNews(true);
+                break;
+            default:
+                news.setAddAll(true);
+                break;
+        }
+    }
+
+    private boolean getType(String type, News news){
+        boolean res = false;
+        switch (type){
+            case "paper":
+                res = news.getAddPaper();
+                break;
+            case "news":
+                res = news.getAddNews();
+                break;
+            default:
+                res = news.getAddAll();
+                break;
+        }
+        return res;
     }
 
     //添加最新的进去

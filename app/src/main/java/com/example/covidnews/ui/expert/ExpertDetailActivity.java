@@ -13,13 +13,10 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.example.covidnews.NetParser.ImageLoader;
 import com.example.covidnews.R;
-import com.example.covidnews.ui.home.HomeFragment;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
 
 public class ExpertDetailActivity extends AppCompatActivity {
 
@@ -36,8 +33,9 @@ public class ExpertDetailActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         ImageView iview = findViewById(R.id.de_avatar);
-        ImageLoader loader = new ImageLoader(this);
-        loader.display(iview,now.avatar);
+        iview.setImageResource(R.drawable.person);
+        ImageLoader loader = ImageLoader.getInstance();
+        loader.displayNet(iview,now.avatar);
         myview.setLayoutManager(manager);
         TextView name =  findViewById(R.id.Name);
         TextView position = findViewById(R.id.position);
@@ -93,8 +91,10 @@ public class ExpertDetailActivity extends AppCompatActivity {
                 }
             }
             else if(i==2){
-                if(now.tags!=null&&now.tags.size()>0){
+                if(now.tags!=null){
                     List<BaseNode> frontlist = new ArrayList<>();
+                    for(Map.Entry<String,Float> entry:now.tags.entrySet())
+                        System.out.println(entry.getKey()+" "+entry.getValue());
                     FrontNode ff = new FrontNode(now.tags);
                     frontlist.add(ff);
                     temp = new ExpRootNode("Research Fronts",frontlist);
@@ -103,11 +103,7 @@ public class ExpertDetailActivity extends AppCompatActivity {
             else if(i==4){
                 if(now.emails!=null&&now.emails.size()!=0){
                     List<BaseNode> emaillist = new ArrayList<>();
-                    Set<String> emails = new TreeSet<>();
                     for(String email:now.emails){
-                        emails.add(email);
-                    }
-                    for(String email:emails){
                         emaillist.add(new EmailNode(email));
                     }
                     temp = new ExpRootNode("Contact Emails",emaillist);

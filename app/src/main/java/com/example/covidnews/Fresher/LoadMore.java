@@ -66,6 +66,7 @@ public class LoadMore implements Runnable{
                 final NewsItem ni = new NewsItem(news.getTitle(), news.getTime(), null);
                 ni.setKind(news.getType());
                 ni.setDescription(news.getSource());
+                ni.setId(news.getId());
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
