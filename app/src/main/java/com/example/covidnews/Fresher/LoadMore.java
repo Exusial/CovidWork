@@ -25,21 +25,12 @@ public class LoadMore implements Runnable{
     private NewsFragment fragment;
     private String kind;
     private NewsItemActivity mContext;
-    private int workkind;
 
-    public LoadMore(NewsAdapter adapter, NewsFragment fragment, String kind){
+    public LoadMore(NewsAdapter adapter, NewsFragment fragment, String kind) {
         this.adapter = adapter;
         mHandler = new Handler();
         this.fragment = fragment;
         this.kind = kind.toLowerCase();
-        workkind = 0;
-    }
-
-    public LoadMore(NewsAdapter adapter, NewsItemActivity context){
-        this.adapter = adapter;
-        mHandler = new Handler();
-        this.mContext = context;
-        workkind = 1;
     }
 
     @Override
@@ -58,7 +49,7 @@ public class LoadMore implements Runnable{
         ArrayList<News> newsArrayList = eventsParser.justGet(page, 20, kind);
         Log.d("FINAL:", newsArrayList.size() + "");
         if(newsArrayList.size() == 0){
-            ;
+            fragment.LoadReCall(2); //失败回调
         }else{
             int s = newsArrayList.size();
             for(int i = 0; i <= s-1; i ++){
@@ -67,14 +58,19 @@ public class LoadMore implements Runnable{
                 ni.setKind(news.getType());
                 ni.setDescription(news.getSource());
                 ni.setId(news.getId());
-                    mHandler.post(new Runnable() {
+                mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             fragment.freshNews(adapter, ni, -1);
                         }
                     });
-
             }
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    fragment.LoadReCall(1);                 //正确回调
+                }
+            });
         }
     }
 }
