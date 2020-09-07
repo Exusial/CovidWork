@@ -1,12 +1,21 @@
 package com.example.covidnews.globalviews;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +60,29 @@ public class GlobalFragment extends Fragment {
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         myview.setLayoutManager(manager);
         GlobalAdapter adapter = new GlobalAdapter(R.layout.global_item_layout, data);
+        Button btn_1 = root.findViewById(R.id.button1);
+        final EditText text = root.findViewById(R.id.search_country);
+        text.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        btn_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String query = text.getText().toString();
+                ArrayList<Integer> target = map.get(query);
+                if(target!=null) {
+                    AlertDialog dialog = new AlertDialog.Builder(getContext()).setTitle(query).setMessage(
+                            "感染人数  " + target.get(0) + "\n" + "死亡人数  " + target.get(1) + "\n" + "痊愈人数  " + target.get(2)
+                    ).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    }).create();
+                    dialog.setCancelable(true);
+                    dialog.show();
+                }
+                else
+                    Toast.makeText(getContext(),"没有找到国家，请输入国家英文名重试？",Toast.LENGTH_LONG).show();
+            }
+        });
         myview.setAdapter(adapter);
         return root;
     }

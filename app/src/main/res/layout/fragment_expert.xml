@@ -4,11 +4,6 @@
     andriod:orientation="vertical"
     andriod:layout_width="match_parent"
     andriod:layout_height="match_parent">
-    <ImageView
-        andriod:layout_width="match_parent"
-        andriod:layout_height="80dp"
-        andriod:src="@drawable/expert_title"
-        andriod:scaleType="centerCrop"/>
     <LinearLayout
         andriod:layout_width="match_parent"
         andriod:layout_height="match_parent"

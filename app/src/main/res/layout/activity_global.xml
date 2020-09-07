@@ -4,15 +4,36 @@
     andriod:orientation="vertical"
     andriod:layout_width="match_parent"
     andriod:layout_height="match_parent">
-    <TextView
-        andriod:layout_width="210dp"
-        andriod:layout_height="70dp"
-        andriod:text="全球新冠数据"
-        andriod:gravity="center"
-        andriod:layout_gravity="center_horizontal"
-        andriod:layout_marginTop="10dp"
-        andriod:textSize="30dp"
-        />
+    <LinearLayout
+        andriod:layout_width="match_parent"
+        andriod:layout_height="40dp"
+        andriod:orientation="horizontal">
+        <TextView
+            andriod:layout_width="wrap_content"
+            andriod:layout_height="40dp"
+            andriod:text="快速查询"
+            andriod:layout_gravity="center_horizontal"
+            andriod:paddingTop="5dp"
+            andriod:paddingLeft="2dp"
+            andriod:textSize="25dp"
+            />
+        <EditText
+            andriod:layout_width="200dp"
+            andriod:layout_height="match_parent"
+            andriod:hint="请输入英文名"
+            andriod:layout_marginLeft="8dp"
+            andriod:singleLine="true"
+            andriod:paddingLeft="4dp"
+            andriod:id="@+id/search_country"
+            andriod:background="@drawable/text_wrapper"
+            />
+        <Button
+            andriod:layout_width="wrap_content"
+            andriod:layout_height="match_parent"
+            andriod:text="搜素"
+            andriod:layout_marginLeft="5dp"
+            andriod:id="@+id/button1"/>
+    </LinearLayout>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fitem"
         android:orientation="horizontal"

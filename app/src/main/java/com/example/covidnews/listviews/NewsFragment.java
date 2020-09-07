@@ -110,7 +110,8 @@ public class NewsFragment extends Fragment {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 Thread ts = new Thread(new LoadNew(adapter,NewsFragment.this,kind));
-                refreshlayout.finishRefresh(!ts.isAlive());//传入false表示刷新失败
+                refreshlayout.finishRefresh(30000);//传入false表示刷新失败
+
                 refreshlayout.setDisableContentWhenRefresh(true);
                 ts.start();
                 newewst +=5;

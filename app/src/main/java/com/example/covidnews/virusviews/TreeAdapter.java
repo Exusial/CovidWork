@@ -217,9 +217,9 @@ class ImgNodeProvider extends BaseNodeProvider {
     @Override
     public void convert(@NotNull BaseViewHolder helper, @NotNull BaseNode data) {
         ImgNode entity = (ImgNode) data;
-        //ImageLoader loader = new ImageLoader(getContext());
-        //ImageView view = helper.getView(R.id.v_img);
-        //loader.display(view,entity.getTitle());
+        ImageLoader loader = ImageLoader.getInstance();
+        ImageView view = helper.getView(R.id.v_img);
+        loader.displayNet(view,entity.getTitle());
         //helper.setText(R.id.des_text, entity.getTitle());
     }
 

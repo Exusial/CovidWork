@@ -18,9 +18,11 @@ import com.example.covidnews.listviews.NewsItem;
 import com.example.covidnews.newsviews.NewsItemActivity;
 import com.example.covidnews.ui.dashboard.DashboardFragment;
 import com.example.covidnews.ui.expert.ExpertFragment;
+import com.example.covidnews.ui.expert.MainExpertFragment;
 import com.example.covidnews.ui.home.HomeFragment;
 import com.example.covidnews.ui.notifications.KindFragment;
 import com.example.covidnews.ui.notifications.NotificationsFragment;
+import com.example.covidnews.virusviews.VirusFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
@@ -58,24 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 init();
             }
         }).start();
-    }
-
-    private void init(){
-        NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
-        newsDataBase.DeleteByTflag();
-        ImgDataBase imgDataBase = ImgDataBase.getDataBase("ImgTest.db");
-        imgDataBase.DeleteByTflag();
-
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-        HomeFragment.setData();
-        HomeFragment homeFragment = new HomeFragment();
-        KindFragment notificationsFragment = new KindFragment();
-        DashboardFragment dashboardFragment = new DashboardFragment();
-        ExpertFragment expertFragment = ExpertFragment.newInstance();
-        fragments = new Fragment[]{homeFragment,dashboardFragment,notificationsFragment,expertFragment};
-        getSupportFragmentManager().beginTransaction().add(R.id.layout,homeFragment).show(homeFragment).commitAllowingStateLoss();;
-        sel_frag = 0;
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -112,10 +98,35 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
                     }
+                    case R.id.navigation_knowledge:{
+                        if(sel_frag!=4)
+                        {
+                            switchFragment(sel_frag,4);
+                            sel_frag=4;
+                        }
+                        return true;
+                    }
                 }
                 return false;
             }
         });
+    }
+
+    private void init(){
+        NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
+        newsDataBase.DeleteByTflag();
+        ImgDataBase imgDataBase = ImgDataBase.getDataBase("ImgTest.db");
+        imgDataBase.DeleteByTflag();
+        HomeFragment.setData();
+        HomeFragment homeFragment = new HomeFragment();
+        KindFragment notificationsFragment = new KindFragment();
+        DashboardFragment dashboardFragment = new DashboardFragment();
+        MainExpertFragment expertFragment = new MainExpertFragment();
+        VirusFragment virusFragment = new VirusFragment();
+        fragments = new Fragment[]{homeFragment,dashboardFragment,notificationsFragment,expertFragment,virusFragment};
+        getSupportFragmentManager().beginTransaction().add(R.id.layout,homeFragment).show(homeFragment).commitAllowingStateLoss();;
+        sel_frag = 0;
+
     }
 
     @SuppressLint("RestrictedApi")
