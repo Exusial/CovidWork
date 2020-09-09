@@ -16,10 +16,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.covidnews.MainActivity;
+import com.example.covidnews.MainViewModel;
 import com.example.covidnews.R;
 import com.example.covidnews.globalviews.GlobalFragment;
 import com.example.covidnews.listviews.NewsFragment;
@@ -34,6 +37,7 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,14 +51,21 @@ public class KindFragment extends Fragment {
     public static ArrayList<Fragment> fragments;
     public static ArrayList<String> titles;
     public static Fadatper fadatper;
-    public static HashMap<String,ArrayList<Integer>> kv = null;
+    static MainViewModel vm;
     public static boolean hasfinished = false;
     private static View root;
+    private MainActivity mainActivity;
+
+    public KindFragment(MainActivity mainActivity){
+        this.mainActivity = mainActivity;
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        kv = new HashMap<>();
+        if(vm == null)
+            vm = new ViewModelProvider(mainActivity).get(MainViewModel.class);
         titles = new ArrayList<>();
         titles.add("全国疫情");
         titles.add("全球疫情");
@@ -106,7 +117,7 @@ public class KindFragment extends Fragment {
     public Message get_data()  {
         Message msg = new Message();
         try {
-            if(kv==null)
+            if(vm.getKv().getValue().size()==0)
                 hasfinished = false;
             if(hasfinished) {
                 msg.what = 1;
@@ -129,7 +140,7 @@ public class KindFragment extends Fragment {
                 ArrayList<Integer> ndata = null;
                 if (fdata.getData().size() > 0) {
                     ndata = fdata.getData().get(fdata.getData().size() - 1);
-                    kv.put(cc,ndata);
+                    vm.getKv().getValue().put(cc,ndata);
                 }
             }
             hasfinished = true;
@@ -160,8 +171,8 @@ public class KindFragment extends Fragment {
             }
             else if(msg.what==1){
                 root.findViewById(R.id.set).setVisibility(View.GONE);
-                GlobalFragment gfragment = new GlobalFragment();
-                ProvinceFragment pfragment = new ProvinceFragment();
+                GlobalFragment gfragment = new GlobalFragment(mainActivity);
+                ProvinceFragment pfragment = new ProvinceFragment(mainActivity);
                 gfragment.process_data();
                 pfragment.process_data();
                 fragments = new ArrayList<>();

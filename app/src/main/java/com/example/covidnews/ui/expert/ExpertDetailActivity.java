@@ -83,7 +83,7 @@ public class ExpertDetailActivity extends AppCompatActivity {
                 }
             }
             else if(i==3){
-                if(now.edu!=null){
+                if(now.edu!=null&&now.edu.length()>0){
                     List<BaseNode> Edulist = new ArrayList<>();
                     ExpDesNode work = new ExpDesNode(now.edu.replaceAll("<br>",""));
                     Edulist.add(work);
@@ -91,10 +91,8 @@ public class ExpertDetailActivity extends AppCompatActivity {
                 }
             }
             else if(i==2){
-                if(now.tags!=null){
+                if(now.tags!=null&&now.tags.size()>0){
                     List<BaseNode> frontlist = new ArrayList<>();
-                    for(Map.Entry<String,Float> entry:now.tags.entrySet())
-                        System.out.println(entry.getKey()+" "+entry.getValue());
                     FrontNode ff = new FrontNode(now.tags);
                     frontlist.add(ff);
                     temp = new ExpRootNode("Research Fronts",frontlist);

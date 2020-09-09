@@ -26,6 +26,7 @@ public class LoadMore implements Runnable{
     private String kind;
     private NewsItemActivity mContext;
 
+
     public LoadMore(NewsAdapter adapter, NewsFragment fragment, String kind) {
         this.adapter = adapter;
         mHandler = new Handler();

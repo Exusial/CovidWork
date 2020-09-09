@@ -17,9 +17,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.covidnews.MainActivity;
+import com.example.covidnews.MainViewModel;
 import com.example.covidnews.R;
 import com.example.covidnews.listviews.NewsFragment;
 import com.example.covidnews.ui.notifications.KindFragment;
@@ -41,15 +44,19 @@ import lecho.lib.hellocharts.view.ColumnChartView;
 
 public class GlobalFragment extends Fragment {
 
-    public static int max_item = 3;
-    public static ArrayList<NewsFragment> fragments;
-    public static ArrayList<String> titles;
     public static Integer all[] = {0,0,0};
     public static HashMap<String,ArrayList<Integer>> map = null;
     public static ArrayList<ListItem> data;
+    private static MainViewModel vm;
+    private MainActivity mainActivity;
 
+    public GlobalFragment(MainActivity mainActivity){
+        this.mainActivity = mainActivity;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        if(vm==null)
+            vm = new ViewModelProvider(mainActivity).get(MainViewModel.class);
         super.onCreate(savedInstanceState);
     }
 
@@ -59,7 +66,7 @@ public class GlobalFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         myview.setLayoutManager(manager);
-        GlobalAdapter adapter = new GlobalAdapter(R.layout.global_item_layout, data);
+        GlobalAdapter adapter = new GlobalAdapter(R.layout.global_item_layout, vm.getData().getValue());
         Button btn_1 = root.findViewById(R.id.button1);
         final EditText text = root.findViewById(R.id.search_country);
         text.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -92,7 +99,7 @@ public class GlobalFragment extends Fragment {
             map = new HashMap<>();
         if(data==null)
             data = new ArrayList<>();
-        for(Map.Entry<String,ArrayList<Integer>> entry:KindFragment.kv.entrySet()){
+        for(Map.Entry<String,ArrayList<Integer>> entry:vm.getKv().getValue().entrySet()){
             String[] countris = entry.getKey().split("\\|");
             if(countris.length>1)
                 continue;
@@ -109,9 +116,9 @@ public class GlobalFragment extends Fragment {
                 nums.set(1,nums.get(1)+entry.getValue().get(3));
                 nums.set(2,nums.get(2)+entry.getValue().get(2));
             }
-            map.put(country,nums);
+            vm.getmap().getValue().put(country,nums);
         }
-        List<Map.Entry<String,ArrayList<Integer>>> so = new ArrayList<Map.Entry<String,ArrayList<Integer>>>(map.entrySet());
+        List<Map.Entry<String,ArrayList<Integer>>> so = new ArrayList<Map.Entry<String,ArrayList<Integer>>>(vm.getmap().getValue().entrySet());
         Collections.sort(so, new Comparator<Map.Entry<String, ArrayList<Integer>>>() {
             @Override
             public int compare(Map.Entry<String, ArrayList<Integer>> stringArrayListEntry, Map.Entry<String, ArrayList<Integer>> t1) {
@@ -120,7 +127,7 @@ public class GlobalFragment extends Fragment {
         });
         for(Map.Entry<String,ArrayList<Integer>> entry:so) {
             ListItem temp = new ListItem(entry.getKey(), Integer.toString(entry.getValue().get(0)), Integer.toString(entry.getValue().get(1)), Integer.toString(entry.getValue().get(2)));
-            data.add(temp);
+            vm.getData().getValue().add(temp);
         }
     }
 

@@ -12,11 +12,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.covidnews.MainActivity;
+import com.example.covidnews.MainViewModel;
 import com.example.covidnews.R;
 import com.example.covidnews.listviews.NewsFragment;
 import com.example.covidnews.ui.notifications.KindFragment;
@@ -49,8 +52,13 @@ public class ProvinceFragment extends Fragment {
     public static ArrayList<NewsFragment> fragments;
     public static ArrayList<String> titles;
     public static Integer all[] = {0,0,0};
-    public static HashMap<String,ArrayList<Integer>> prolist = null;
-
+    private MainActivity mainActivity;
+    static MainViewModel vm;
+    public ProvinceFragment(MainActivity mainActivity){
+        this.mainActivity = mainActivity;
+        if(vm==null)
+            vm = new ViewModelProvider(mainActivity).get(MainViewModel.class);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,7 +78,7 @@ public class ProvinceFragment extends Fragment {
         ArrayList<String> names = new ArrayList<String>();
         float count = 0.f;
         ArrayList<Float> maps = new ArrayList<>();
-        for(Map.Entry<String,ArrayList<Integer>> entry:prolist.entrySet()){
+        for(Map.Entry<String,ArrayList<Integer>> entry:vm.getProlist().getValue().entrySet()){
             subcols = new ArrayList<SubcolumnValue>();
             maps.add(count);
             count++;
@@ -109,15 +117,13 @@ public class ProvinceFragment extends Fragment {
     }
 
     public static void process_data(){
-        if(prolist == null)
-            prolist = new HashMap<>();
-        for(Map.Entry<String, ArrayList<Integer>> entry:KindFragment.kv.entrySet()) {
+        for(Map.Entry<String, ArrayList<Integer>> entry:vm.getKv().getValue().entrySet()) {
             String[] countris = entry.getKey().split("\\|");
             ArrayList<Integer> ndata = entry.getValue();
             if (countris.length != 2 || !countris[0].equals("China"))
                 continue;
             String province = countris[1];
-            ArrayList<Integer> nums = KindFragment.kv.get(province);
+            ArrayList<Integer> nums = vm.getKv().getValue().get(province);
             if (nums == null) {
                 nums = new ArrayList<Integer>();
                 nums.add(ndata.get(0));
@@ -128,7 +134,7 @@ public class ProvinceFragment extends Fragment {
                 nums.set(1, nums.get(1) + ndata.get(3));
                 nums.set(2, nums.get(2) + ndata.get(2));
             }
-            prolist.put(province, nums);
+            vm.getProlist().getValue().put(province, nums);
         }
     }
 

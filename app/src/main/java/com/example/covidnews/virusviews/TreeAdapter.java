@@ -220,6 +220,7 @@ class ImgNodeProvider extends BaseNodeProvider {
         ImageLoader loader = ImageLoader.getInstance();
         ImageView view = helper.getView(R.id.v_img);
         loader.displayNet(view,entity.getTitle());
+
         //helper.setText(R.id.des_text, entity.getTitle());
     }
 

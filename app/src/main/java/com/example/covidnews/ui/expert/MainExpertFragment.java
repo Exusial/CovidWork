@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
@@ -26,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.example.covidnews.MainActivity;
+import com.example.covidnews.MainViewModel;
 import com.example.covidnews.R;
 import com.example.covidnews.ui.notifications.KindFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -47,7 +50,6 @@ import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CU
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ExpertFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class MainExpertFragment extends Fragment {
@@ -63,14 +65,16 @@ public class MainExpertFragment extends Fragment {
     static ArrayList<ExpertFragment> fragments;
     static ArrayList<String> titles;
     private View root;
+    MainActivity mainActivity;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private static MainViewModel vm;
 
-    public MainExpertFragment() {
+    public MainExpertFragment(MainActivity mainActivity) {
         // Required empty public constructor
+        this.mainActivity = mainActivity;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,9 @@ public class MainExpertFragment extends Fragment {
             };
             thread.start();
         }
+        if(vm==null){
+            vm = new ViewModelProvider(mainActivity).get(MainViewModel.class);
+        }
     }
 
     @Override
@@ -101,6 +108,11 @@ public class MainExpertFragment extends Fragment {
 
     public Message get_data()  {
         Message msg = new Message();
+        if(vm.getPassed_experts().getValue().size()!=0&&vm.getLive_experts().getValue().size()!=0)
+        {
+            msg.what = 1;
+            return msg;
+        }
         try {
             String target = "https://innovaapi.aminer.cn/predictor/api/v1/valhalla/highlight/get_ncov_expers_list?v=2";
             URL url = new URL(target);
@@ -115,7 +127,6 @@ public class MainExpertFragment extends Fragment {
             String tt = all.toString();
             Map<String, JSONArray> map = JSONObject.parseObject(tt, Map.class);
             JSONArray nested = map.get("data");
-            System.out.println(nested.size());
             for (int i = 0; i < nested.size(); i++) {
                 Expert_detail temp = new Expert_detail();
                 JSONObject eobj = nested.getJSONObject(i);
@@ -152,12 +163,15 @@ public class MainExpertFragment extends Fragment {
                     }
                 }
                 temp.ispassed = (Boolean) eobj.get("is_passedaway");
-                experts.add(temp);
+                if(temp.ispassed){
+                    vm.getLive_experts().getValue().add(temp);
+                }
+                else
+                    vm.getPassed_experts().getValue().add(temp);
             }
-            if(experts.size()!=0)
-                msg.what = 1;
-            else
-                msg.what = 0;
+            msg.what = 1;
+            //System.out.println(vm.getPassed_experts().getValue().size());
+            //System.out.println(vm.getLive_experts().getValue().size());
         } catch (MalformedURLException e) {
             System.out.println("MalForm");
             msg.what = 0;
@@ -190,19 +204,8 @@ public class MainExpertFragment extends Fragment {
                 final MainActivity activity = (MainActivity) ref.get();
                 root.findViewById(R.id.set).setVisibility(View.GONE);
                 if (activity != null) {
-                    ExpertFragment kfragment = new ExpertFragment();
-                    ExpertFragment pfragment = new ExpertFragment();
-                    for(Expert_detail exp:experts){
-                        if(exp.ispassed==false)
-                            kfragment.getlist().add(exp);
-                        else
-                            pfragment.getlist().add(exp);
-                    }
-                    kfragment.changed();
-                    pfragment.changed();
-                    System.out.println(kfragment.getlist().size());
-                    System.out.println(pfragment.getlist().size());
-                    System.out.println(experts.size());
+                    ExpertFragment kfragment = new ExpertFragment(0,mainActivity);
+                    ExpertFragment pfragment = new ExpertFragment(1,mainActivity);
                     fragments.add(kfragment);
                     fragments.add(pfragment);
                     TabLayout layout = root.findViewById(R.id.tab_layout);
@@ -212,6 +215,8 @@ public class MainExpertFragment extends Fragment {
                     pager.setAdapter(fadatper);
                     fadatper.notifyDataSetChanged();
                     layout.setupWithViewPager(pager);
+                    kfragment.changes();
+                    pfragment.changes();
                 }
             }
         }
@@ -247,49 +252,3 @@ public class MainExpertFragment extends Fragment {
 
 
 
-class Expert_row implements Serializable {
-    public String name;
-    public String professions;
-    public Map<String,Object> params;
-    public String inst;
-    public boolean ispassed;
-    public String avatar;
-    public String position;
-    Expert_row(String name,String professions,Map<String,Object> params,String inst){
-        this.name = name;
-        this.params = params;
-        this.professions = professions;
-        this.inst = inst;
-        avatar = null;
-        ispassed = false;
-        params = new HashMap<>();
-    }
-
-    Expert_row(){
-        params = new HashMap<>();
-    }
-}
-
-class Expert_detail extends Expert_row implements Serializable {
-    public String description;
-    public ArrayList<String> emails;
-    public String homepage;
-    public String[] experience;
-    public String edu;
-    TreeMap<String,Float> tags;
-    Expert_detail(String name,String professions,Map<String,Object> params,String inst){
-        super(name,professions,params,inst);
-        emails = new ArrayList<>();
-        tags = new TreeMap<>();
-    }
-
-    Expert_detail(){
-        super();
-        emails = new ArrayList<>();
-        tags = new TreeMap<>();
-    };
-
-    public String toString(){
-        return name+" "+position+" "+inst;
-    }
-}

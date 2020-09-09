@@ -9,4 +9,8 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/navigation_Kmeans"
+        android:title="新闻聚类"
+        />
 </menu>

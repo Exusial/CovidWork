@@ -3,6 +3,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,12 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.example.covidnews.MainActivity;
+import com.example.covidnews.MainViewModel;
 import com.example.covidnews.R;
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ExpertFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class ExpertFragment extends Fragment {
@@ -24,25 +26,22 @@ public class ExpertFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     RecyclerView myview;
     RowAdapter adapter;
-    ArrayList<Expert_detail> experts;
+    private int kind = 1;
+    static MainViewModel vm;
+    MainActivity mainActivity;
 
     // TODO: Rename and change types of parameters
-    public ExpertFragment() {
+    public ExpertFragment(int i,MainActivity mainActivity) {
         // Required empty public constructor
-        if(experts==null) {
-            experts = new ArrayList<>();
-        }
         adapter = new RowAdapter(R.layout.row_expert_layout, null);
-    }
-
-    // TODO: Rename and change types and number of parameters
-    public static ExpertFragment newInstance() {
-        ExpertFragment fragment = new ExpertFragment();
-        return fragment;
+        kind = i;
+        this.mainActivity = mainActivity;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        if(vm==null)
+            vm = new ViewModelProvider(mainActivity).get(MainViewModel.class);
         super.onCreate(savedInstanceState);
     }
 
@@ -73,13 +72,15 @@ public class ExpertFragment extends Fragment {
         return root;
     }
 
-    public ArrayList<Expert_detail> getlist(){
-        return experts;
+    public void changes(){
+        if(kind == 1)
+            adapter.setList(vm.getLive_experts().getValue());
+        else
+            adapter.setList(vm.getPassed_experts().getValue());
+        System.out.println(adapter.getData().size());
+        adapter.notifyDataSetChanged();
+        myview.setAdapter(adapter);
     }
 
-    public void changed(){
-        adapter.setList(experts);
-        adapter.notifyDataSetChanged();
-    }
 
 }

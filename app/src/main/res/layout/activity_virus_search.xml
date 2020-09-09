@@ -28,6 +28,7 @@
             andriod:layout_height="50dp"
             andriod:paddingLeft="10dp"
             andriod:hint="搜索条目"
+            andriod:singleLine="true"
             andriod:background="@drawable/text_wrapper"/>
         <Button
             andriod:id="@+id/m_btn1"

@@ -359,14 +359,14 @@ public class ImageLoader {
                 imageCaches.put(url, bitmap);
 
                 //在显示UI之前，拿到最新的url地址
-                String recentlyUrl = (String)iv.getTag();
+                String recentlyUrl = mTags.get(iv);
 
                 if(url.equals(recentlyUrl)){
                     mHandler.post(new Runnable(){
                         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                         @Override
                         public void run(){
-                            display(iv, url);
+                            displayNet(iv, url);
                         }
                     });
                 }

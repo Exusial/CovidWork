@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.example.covidnews.MainActivity;
 import com.example.covidnews.R;
 import com.example.covidnews.listviews.NewsAdapter;
 import com.example.covidnews.listviews.NewsItem;
@@ -25,6 +26,7 @@ import com.example.covidnews.ui.home.HomeFragment;
 public class DashboardFragment extends Fragment {
 
     private View root;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -2,6 +2,7 @@ package com.example.covidnews;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,11 +16,13 @@ import com.example.covidnews.NewsDataBase.ImgDataBase;
 import com.example.covidnews.NewsDataBase.NewsDataBase;
 import com.example.covidnews.listviews.NewsAdapter;
 import com.example.covidnews.listviews.NewsItem;
+import com.example.covidnews.kmeanview.KmeansActivity;
 import com.example.covidnews.newsviews.NewsItemActivity;
 import com.example.covidnews.ui.dashboard.DashboardFragment;
-import com.example.covidnews.ui.expert.ExpertFragment;
+import com.example.covidnews.ui.expert.MainExpertFragment;
 import com.example.covidnews.ui.home.HomeFragment;
-import com.example.covidnews.ui.notifications.NotificationsFragment;
+import com.example.covidnews.ui.notifications.KindFragment;
+import com.example.covidnews.virusviews.VirusFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
@@ -28,12 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,8 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private int sel_frag;
     private static MainActivity mainActivity;
     private Fragment[] fragments;
-    final LinkedList<String> history = new LinkedList<>();
-    ArrayAdapter<String> temp;
+    final static LinkedList<String> history = new LinkedList<>();
+    static ArrayAdapter<String> temp;
+    static SearchView.SearchAutoComplete textview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +49,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mainActivity = MainActivity.this;
-
         ImageLoader imageLoader = ImageLoader.getInstance();
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                init();
+            }
+        }).start();
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -92,34 +95,35 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
                     }
+                    case R.id.navigation_knowledge:{
+                        if(sel_frag!=4)
+                        {
+                            switchFragment(sel_frag,4);
+                            sel_frag=4;
+                        }
+                        return true;
+                    }
                 }
                 return false;
             }
         });
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                init();
-            }
-        }).start();
     }
-
 
     private void init(){
         NewsDataBase newsDataBase = NewsDataBase.getDataBase("NewsTest.db");
         newsDataBase.DeleteByTflag();
         ImgDataBase imgDataBase = ImgDataBase.getDataBase("ImgTest.db");
         imgDataBase.DeleteByTflag();
-
         HomeFragment.setData();
         HomeFragment homeFragment = new HomeFragment();
-        NotificationsFragment notificationsFragment = new NotificationsFragment();
+        KindFragment notificationsFragment = new KindFragment(MainActivity.this);
         DashboardFragment dashboardFragment = new DashboardFragment();
-        ExpertFragment expertFragment = ExpertFragment.newInstance();
-        fragments = new Fragment[]{homeFragment,dashboardFragment,notificationsFragment,expertFragment};
+        MainExpertFragment expertFragment = new MainExpertFragment(MainActivity.this);
+        VirusFragment virusFragment = new VirusFragment();
+        fragments = new Fragment[]{homeFragment,dashboardFragment,notificationsFragment,expertFragment,virusFragment};
         getSupportFragmentManager().beginTransaction().add(R.id.layout,homeFragment).show(homeFragment).commitAllowingStateLoss();;
         sel_frag = 0;
+
     }
 
     @SuppressLint("RestrictedApi")
@@ -136,12 +140,15 @@ public class MainActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("key",query);
                 intent.putExtras(bundle);
-                startActivity(intent);
                 history.push(query);
                 if(history.size() >= 8)
                     history.remove();
                 Log.d("HISTORY:", history.get(0));
+                temp.clear();
+                temp = new ArrayAdapter<String>(MainActivity.this,R.layout.search_item_layout,history);
                 temp.notifyDataSetChanged();
+                textview.setAdapter(temp);
+                startActivity(intent);
                 return false;
             }
 
@@ -150,9 +157,11 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        final SearchView.SearchAutoComplete textview = view.findViewById(R.id.search_src_text);
-        temp = new ArrayAdapter<String>(this,R.layout.search_item_layout,history);
+        textview = view.findViewById(R.id.search_src_text);
+        textview.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        textview.setTextColor(Color.parseColor("#000000"));
         textview.setThreshold(0);
+        temp = new ArrayAdapter<String>(this,R.layout.search_item_layout,history);
         textview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -161,6 +170,18 @@ public class MainActivity extends AppCompatActivity {
         });
         textview.setAdapter(temp);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.navigation_Kmeans:{
+                Intent intent = new Intent(MainActivity.this, KmeansActivity.class);
+                startActivity(intent);
+                break;
+            }
+            default:break;
+        }
+        return true;
     }
 
     public static MainActivity getMainActivity(){
